@@ -23,7 +23,7 @@
     CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT
     OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS
     SOFTWARE.
-*/ 
+*/
 
 #include <stdio.h>
 #include <string.h>
@@ -48,8 +48,7 @@
 #include "../drivers/timeout.h"
 #include "mqtt_packetPopulation/mqtt_packetPopulate.h"
 #include "../mqtt/mqtt_core/mqtt_core.h"
-#include "wifi_service.h" 
-#include "../credentials_storage/credentials_storage.h"
+#include "wifi_service.h"
 
 #include "../led.h"
 #include "../mqtt/mqtt_packetTransfer_interface.h"
@@ -57,7 +56,7 @@
 
 static bool cloudInitialized = false;
 static bool waitingForMQTT = false;
-   
+
 const char projectId[] = CFG_PROJECT_ID;
 const char projectRegion[] = CFG_PROJECT_REGION;
 const char registryId[] = CFG_REGISTRY_ID;
@@ -94,14 +93,14 @@ timerStruct_t cloudResetTaskTimer       = {cloudResetTask};
 
 /** \brief MQTT publish handler call back table.
  *
- * This callback table lists the callback function for to be called on reception 
+ * This callback table lists the callback function for to be called on reception
  * of a PUBLISH message for each topic which the application has subscribed to.
- * For each new topic which is subscribed to by the application, there needs to 
+ * For each new topic which is subscribed to by the application, there needs to
  * be a corresponding publish handler.
- * E.g.: For a particular topic 
+ * E.g.: For a particular topic
  *       mchp/mySubscribedTopic/myDetailedPath
  *       Sample publish handler function  = void handlePublishMessage(uint8_t *topic, uint8_t *payload)
- * 
+ *
  */
 publishReceptionHandler_t imqtt_publishReceiveCallBackTable[NUM_TOPICS_SUBSCRIBE];
 
@@ -121,19 +120,19 @@ uint32_t mqttTimeoutTask(void *payload) {
 
    waitingForMQTT = false;
 
-   return 0;  
+   return 0;
 }
 
 
 uint32_t cloudResetTask(void *payload) {
 	debug_printError("CLOUD: Reset task");
-   cloudInitialized = reInit();  
+   cloudInitialized = reInit();
    return 0;
 }
 
 
 void CLOUD_init(char*  attDeviceID)
-{     
+{
    // Create timers for the application scheduler
    timeout_create(&CLOUD_taskTimer, 500);
 }
@@ -141,15 +140,15 @@ void CLOUD_init(char*  attDeviceID)
 static void connectMQTT()
 {
    uint32_t currentTime = time(NULL);
-   
+
    if (currentTime > 0)
    {
       // The JWT takes time in UNIX format (seconds since 1970), AVR-LIBC uses seconds from 2000 ...
-      updateJWT(currentTime + UNIX_OFFSET);	  
+      updateJWT(currentTime + UNIX_OFFSET);
 	  MQTT_CLIENT_connect();
-   }      
+   }
    debug_print("CLOUD: MQTT Connect");
-   
+
    // MQTT SUBSCRIBE packet will be sent after the MQTT connection is established.
    sendSubscribe = true;
 }
@@ -175,7 +174,7 @@ void CLOUD_subscribe(void)
 		imqtt_publishReceiveCallBackTable[0].mqttHandlePublishDataCallBack = receivedFromCloud;
 		MQTT_SetPublishReceptionHandlerTable(imqtt_publishReceiveCallBackTable);
 	}
-	
+
 	if(MQTT_CreateSubscribePacket(&cloudSubscribePacket) == true)
 	{
 		debug_printInfo("CLOUD: SUBSCRIBE packet created");
@@ -197,23 +196,23 @@ packetReceptionHandler_t* getSocketInfo(uint8_t sock);
 static int8_t connectMQTTSocket(void)
 {
    int8_t ret = false;
-   
+
    if (mqttGoogleApisComIP > 0)
    {
       struct bsd_sockaddr_in addr;
-       
+
       addr.sin_family = PF_INET;
       addr.sin_port = BSD_htons(443);
       addr.sin_addr.s_addr = mqttGoogleApisComIP;
-       
+
       mqttContext  *context = MQTT_GetClientConnectionInfo();
       socketState_t  socketState = BSD_GetSocketState(*context->tcpClientSocket);
-       
+
       // Todo: Check - Are we supposed to call close on the socket here to ensure we do not leak ?
       if (socketState == NOT_A_SOCKET)
       {
          *context->tcpClientSocket = BSD_socket(PF_INET, BSD_SOCK_STREAM, 1);
-         
+
          if (*context->tcpClientSocket >=0)
          {
             packetReceptionHandler_t*  sockInfo = getSocketInfo(*context->tcpClientSocket);
@@ -223,7 +222,7 @@ static int8_t connectMQTTSocket(void)
             }
          }
       }
-   
+
       socketState = BSD_GetSocketState(*context->tcpClientSocket);
       if (socketState == SOCKET_CLOSED) {
          debug_print("CLOUD: Connect socket");
@@ -235,7 +234,7 @@ static int8_t connectMQTTSocket(void)
             BSD_close(*context->tcpClientSocket);
          }
       }
-   }   
+   }
    return ret;
 }
 
@@ -247,13 +246,13 @@ uint32_t CLOUD_task(void *param)
 	if (!cloudInitialized)
 	{
       if (!isResetting)
-      { 
+      {
         isResetting = true;
         debug_printError("CLOUD: Cloud reset timer is set");
         timeout_delete(&mqttTimeoutTaskTimer);
         timeout_create(&cloudResetTaskTimer, CLOUD_RESET_TIMEOUT);
-        cloudResetTimerFlag = true;		 
-      }      
+        cloudResetTimerFlag = true;
+      }
 	} else {
       if (!waitingForMQTT)
       {
@@ -266,7 +265,7 @@ uint32_t CLOUD_task(void *param)
          }
       }
    }
-   
+
    // If we have lost the AP we need to get the mqttState to disconnected
    if (shared_networking_params.haveAPConnection == 0)
    {
@@ -276,7 +275,7 @@ uint32_t CLOUD_task(void *param)
       {
          MQTT_initialiseState();
       }
-   }   
+   }
    else
    {
       static int32_t lastAge = -1;
@@ -299,59 +298,59 @@ uint32_t CLOUD_task(void *param)
             }
          }
       }
-      
+
       switch(socketState)
 	   {
          case NOT_A_SOCKET:
 		   case SOCKET_CLOSED:
 			  // Reinitialize MQTT
-			  MQTT_ClientInitialise();			   
-		     connectMQTTSocket(); 
+			  MQTT_ClientInitialise();
+		     connectMQTTSocket();
 		   break;
-      
+
 		   case SOCKET_CONNECTED:
             // If MQTT was disconnected but the socket is up we retry the MQTT connection
             if (MQTT_GetConnectionState() == DISCONNECTED)
             {
                connectMQTT();
-            } 
-			else 
+            }
+			else
 			{
                MQTT_ReceptionHandler(mqttConnnectionInfo);
                MQTT_TransmissionHandler(mqttConnnectionInfo);
 
                // Todo: We already processed the data in place using PEEK, this just flushes the buffer
                BSD_recv(*MQTT_GetClientConnectionInfo()->tcpClientSocket, MQTT_GetClientConnectionInfo()->mqttDataExchangeBuffers.rxbuff.start, MQTT_GetClientConnectionInfo()->mqttDataExchangeBuffers.rxbuff.bufferLength, 0);
-              
+
                if (MQTT_GetConnectionState() == CONNECTED)
                {
-                  shared_networking_params.haveERROR = 0;         
+                  shared_networking_params.haveERROR = 0;
                   timeout_delete(&mqttTimeoutTaskTimer);
                   timeout_delete(&cloudResetTaskTimer);
                   isResetting = false;
 
-                  waitingForMQTT = false;      
-				  
+                  waitingForMQTT = false;
+
 				  if(sendSubscribe == true)
-				  { 
+				  {
 				      CLOUD_subscribe();
-				  }				 
-				               
+				  }
+
                   // The Authorization timeout is set to 3600, so we need to re-connect that often
                   if (MQTT_getConnectionAge() > MQTT_CONN_AGE_TIMEOUT) {
 					  debug_printError("MQTT: Connection aged, Uptime %lus SocketState (%d) MQTT (%d)", thisAge , socketState, MQTT_GetConnectionState());
                      MQTT_Disconnect(mqttConnnectionInfo);
                      BSD_close(*mqttConnnectionInfo->tcpClientSocket);
                   }
-               } 
+               }
             }
 		   break;
 
 		   default:
-            shared_networking_params.haveERROR = 1; 
+            shared_networking_params.haveERROR = 1;
 		   break;
 	   }
-   }   
+   }
 	return CLOUD_TASK_INTERVAL;
 }
 
@@ -387,7 +386,7 @@ static void updateJWT(uint32_t epoch)
 
    sprintf(cid, "projects/%s/locations/%s/registries/%s/devices/%s", projectId, projectRegion, registryId, deviceId);
    sprintf(mqttTopic, "/devices/%s/events", deviceId);
-   
+
    debug_printInfo("MQTT: cid=%s", cid);
    debug_printInfo("MQTT: mqttTopic=%s", mqttTopic);
    uint8_t res = CRYPTO_CLIENT_createJWT((char*)mqttPassword, PASSWORD_SPACE, epoch, projectId);
@@ -399,22 +398,22 @@ static void updateJWT(uint32_t epoch)
 static uint8_t reInit(void)
 {
     debug_printInfo("CLOUD: reinit");
-    
+
     mqttGoogleApisComIP = 0;
     shared_networking_params.haveAPConnection = 0;
     waitingForMQTT = false;
     isResetting = false;
 	uint8_t wifi_creds;
-		   	
+
     //Re-init the WiFi
     wifi_reinit();
-    
+
     registerSocketCallback(BSD_SocketHandler, dnsHandler);
 
     MQTT_ClientInitialise();
     memset(&cloud_packetReceiveCallBackTable, 0, sizeof(cloud_packetReceiveCallBackTable));
     BSD_SetRecvHandlerTable(cloud_packetReceiveCallBackTable);
-    
+
     cloud_packetReceiveCallBackTable[0].socket = MQTT_GetClientConnectionInfo()->tcpClientSocket;
     cloud_packetReceiveCallBackTable[0].recvCallBack = MQTT_CLIENT_receive;
 
@@ -424,23 +423,23 @@ static uint8_t reInit(void)
       wifi_creds = NEW_CREDENTIALS;
       debug_printInfo("Connecting to AP with new credentials");
     }
-    //This works provided the board had connected to the AP successfully	
-    else 
+    //This works provided the board had connected to the AP successfully
+    else
     {
       wifi_creds = DEFAULT_CREDENTIALS;
       debug_printInfo("Connecting to AP with the last used credentials");
     }
-	
+
     if(!wifi_connectToAp(wifi_creds))
     {
            return false;
     }
-	
+
     timeout_delete(&cloudResetTaskTimer);
     debug_printInfo("CLOUD: Cloud reset timer is deleted");
     timeout_create(&mqttTimeoutTaskTimer, CLOUD_MQTT_TIMEOUT_COUNT);
     cloudResetTimerFlag = false;
-    waitingForMQTT = true;		
+    waitingForMQTT = true;
 
     return true;
 }

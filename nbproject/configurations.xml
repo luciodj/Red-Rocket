@@ -955,6 +955,10 @@
                   value=""/>
         <property key="warningmessagebreakoptions.warningmessages" value="holdstate"/>
       </Simulator>
+      <item path="mcc_generated_files/credentials_storage/credentials_storage.c"
+            ex="true"
+            overriding="false">
+      </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_aes.c"
             ex="true"
             overriding="false">

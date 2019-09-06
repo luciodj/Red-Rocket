@@ -23,7 +23,7 @@ THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
 CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT
 OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS
 SOFTWARE.
-*/ 
+*/
 
 #ifndef WIFI_SERVICE_H_
 #define WIFI_SERVICE_H_
@@ -37,12 +37,11 @@ SOFTWARE.
 #define WIFI_SOFT_AP  0
 #define WIFI_DEFAULT  1
 
-struct wifi_params {
-   char wifi_ssid[MAX_WIFI_CRED_LENGTH];
-   char wifi_password[MAX_WIFI_CRED_LENGTH];
-   char wifi_authType[2];
-};
-extern struct wifi_params wifi_params;
+#define MAX_WIFI_CREDENTIALS_LENGTH 31
+
+extern char ssid[MAX_WIFI_CREDENTIALS_LENGTH];
+extern char pass[MAX_WIFI_CREDENTIALS_LENGTH];
+extern char authType[2];
 
 // If you pass a callback function in here it will be called when the AP state changes. Pass NULL if you do not want that.
 void wifi_init(void (*funcPtr)(uint8_t), uint8_t  mode);
