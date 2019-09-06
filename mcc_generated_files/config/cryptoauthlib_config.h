@@ -6,7 +6,7 @@
 #endif
 
 #ifndef ATCA_NO_POLL
-#define ATCA_NO_POLL 1
+#define ATCA_NO_POLL 0
 #endif
 
 #ifndef ATCA_HAL_I2C

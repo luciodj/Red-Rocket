@@ -52,7 +52,7 @@
 #include <util/delay.h>
 
 void hal_i2c_writeNBytes(twi0_address_t address, void *data, size_t len);
-void hal_i2c_readNBytes(twi0_address_t address, void *data, size_t len);
+ATCA_STATUS hal_i2c_readNBytes(twi0_address_t address, void *data, size_t len);
 
 /** \brief initialize an I2C interface using given config
  * \param[in] hal - opaque ptr to HAL data
@@ -61,7 +61,7 @@ void hal_i2c_readNBytes(twi0_address_t address, void *data, size_t len);
 ATCA_STATUS hal_i2c_init(void *hal, ATCAIfaceCfg *cfg)
 {
 	I2C0_Initialize();
-	
+
 	return ATCA_SUCCESS;
 }
 
@@ -102,9 +102,7 @@ ATCA_STATUS hal_i2c_send(ATCAIface iface, uint8_t *txdata, int txlength)
 
 ATCA_STATUS hal_i2c_receive(ATCAIface iface, uint8_t *rxdata, uint16_t *rxlength)
 {
-	hal_i2c_readNBytes(0x58, rxdata, *rxlength);
-
-	return ATCA_SUCCESS;
+	return hal_i2c_readNBytes(0x58, rxdata, *rxlength);
 }
 
 /** \brief wake up CryptoAuth device using I2C bus
@@ -114,13 +112,13 @@ ATCA_STATUS hal_i2c_receive(ATCAIface iface, uint8_t *rxdata, uint16_t *rxlength
 ATCA_STATUS hal_i2c_wake(ATCAIface iface)
 {
 	I2C_0_wake_up(0x0, 0x0, 1);
-	
+
 	_delay_ms (2*1);
-	
+
 	uint8_t init_data[4];
 	uint8_t verif_data[4] = { 0x04, 0x11, 0x33, 0x43 };
 	uint8_t verification = true;
-	
+
 	hal_i2c_readNBytes(0x58, &init_data, 4);
 
 	for (uint8_t i=0; i<4; i++)
@@ -128,7 +126,7 @@ ATCA_STATUS hal_i2c_wake(ATCAIface iface)
 			if (init_data[i] != verif_data[i])
 				verification = false;
 		}
-	
+
 	if (verification)
 		return ATCA_SUCCESS;
 	else
@@ -167,7 +165,7 @@ void I2C_0_wake_up(uint8_t adr, uint8_t *data, uint8_t size)
 	//transfer_descriptor_t d = {data, size};
 	while (!I2C0_Open(adr))
 	; // sit here until we get the bus..
-	
+
 	I2C0_SetDataCompleteCallback(I2C0_SetReturnStopCallback, NULL);
 
 	// Transmit specified number of bytes
@@ -231,13 +229,18 @@ void hal_i2c_writeNBytes(twi0_address_t address, void *data, size_t len)
 		; // sit here until finished.
 }
 
-void hal_i2c_readNBytes(twi0_address_t address, void *data, size_t len)
+ATCA_STATUS hal_i2c_readNBytes(twi0_address_t address, void *data, size_t len)
+// special version that does not retry on nack but return fail
+// this is necessary to support the ECC608A POLLING mode
 {
+    twi0_error_t ret;
 	while (!I2C0_Open(address))
 		; // sit here until we get the bus..
 	I2C0_SetBuffer(data, len);
-	I2C0_MasterRead();
-	while (I2C_BUSY == I2C0_Close())
+	I2C0_SetAddressNackCallback(NULL, NULL); // do not retry, return fail
+	I2C0_MasterOperation(true);
+    while (I2C_BUSY == (ret = I2C0_Close()))
 		; // sit here until finished.
+    return (ret == I2C_NOERR) ? ATCA_SUCCESS : ATCA_RX_NO_RESPONSE;
 }
 /** @} */

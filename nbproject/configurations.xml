@@ -958,98 +958,434 @@
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_aes.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_checkmac.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_counter.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_derivekey.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_ecdh.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_gendig.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_hmac.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_info.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_kdf.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_mac.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_privwrite.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_secureboot.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_selftest.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_updateextra.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_verify.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_write.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/examples/twi0_master_example.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/winc/driver/source/m2m_ate_mode.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/winc/driver/source/m2m_crypto.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/winc/driver/source/m2m_ota.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/winc/driver/source/m2m_periph.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/winc/driver/source/m2m_ssl.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/winc/driver/source/nmi2c.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
       <item path="mcc_generated_files/winc/driver/source/nmuart.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
     </conf>
   </confs>
