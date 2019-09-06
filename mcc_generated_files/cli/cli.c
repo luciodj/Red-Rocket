@@ -65,7 +65,7 @@ static uint8_t index = 0;
 static bool commandTooLongFlag = false;
 
 const char * const cli_version_number             = "2.1";
-const char * const firmware_version_number        = "1.2.0";
+const char * const firmware_version_number        = "RedRocket(1.2)";
 
 static void command_received(char *command_text);
 static void reset_cmd(char *pArg);
@@ -137,7 +137,7 @@ uint32_t CLI_task(void* param)
       if(c == '\r' || c == '\n')
       {
          command[index] = 0;
-         
+
          if(!commandTooLongFlag)
          {
             if( endOfLineTest(c) && !cmd_rcvd )
@@ -165,7 +165,7 @@ uint32_t CLI_task(void* param)
          }
       }
    }
-	
+
    return CLI_TASK_INTERVAL;
 }
 
@@ -175,12 +175,12 @@ static void set_wifi_auth(char *ssid_pwd_auth)
     char *pch;
     uint8_t params = 0;
 	uint8_t i;
-    
+
     for(i=0;i<=2;i++)credentials[i]='\0';
 
     pch = strtok (ssid_pwd_auth, ",");
     credentials[0]=pch;
-       
+
     while (pch != NULL && params <= 2)
     {
         credentials[params] = pch;
@@ -188,7 +188,7 @@ static void set_wifi_auth(char *ssid_pwd_auth)
         pch = strtok (NULL, ",");
 
     }
-    
+
     if(credentials[0]!=NULL)
     {
         if(credentials[1]==NULL && credentials[2]==NULL) params=1;
@@ -199,7 +199,7 @@ static void set_wifi_auth(char *ssid_pwd_auth)
             else if(params==1);
             else params=2;
         }
-		else params = atoi(credentials[2]);		
+		else params = atoi(credentials[2]);
     }
 
     switch (params)
@@ -207,16 +207,16 @@ static void set_wifi_auth(char *ssid_pwd_auth)
         case WIFI_PARAMS_OPEN:
                 strncpy(ssid, credentials[0],MAX_WIFI_CREDENTIALS_LENGTH-1);
                 strcpy(pass, "\0");
-                strcpy(authType, "1");                
+                strcpy(authType, "1");
             break;
 
         case WIFI_PARAMS_PSK:
 		case WIFI_PARAMS_WEP:
                 strncpy(ssid, credentials[0],MAX_WIFI_CREDENTIALS_LENGTH-1);
                 strncpy(pass, credentials[1],MAX_WIFI_CREDENTIALS_LENGTH-1);
-                sprintf(authType, "%d", params);                
+                sprintf(authType, "%d", params);
             break;
-            
+
         default:
 			params = 0;
             break;
@@ -227,7 +227,7 @@ static void set_wifi_auth(char *ssid_pwd_auth)
         if(CLOUD_isConnected())
         {
             MQTT_Close(MQTT_GetClientConnectionInfo());
-        }        
+        }
 		wifi_disconnectFromAp();
 	}
 	else
@@ -308,9 +308,9 @@ static void get_cli_version(char *pArg)
 }
 
 static void get_firmware_version(char *pArg)
-{    
+{
     (void)pArg;
-    printf("v%s\r\n\4", firmware_version_number);
+    printf("%s\r\n\4", firmware_version_number);
 }
 
 static void command_received(char *command_text)
@@ -332,7 +332,7 @@ static void command_received(char *command_text)
     for (i = 0; i < sizeof(commands)/sizeof(*commands); i++)
     {
         cmp = strcmp(command_text, commands[i].command);
-        ct_len = strlen(command_text);        
+        ct_len = strlen(command_text);
         cc_len = strlen(commands[i].command);
 
         if (cmp == 0 && ct_len == cc_len)
@@ -354,7 +354,7 @@ static void enableUsartRxInterrupts(void)
     do {
         (void)USART2.RXDATAL;
     } while ((USART2.STATUS & USART_RXCIF_bm) != 0);
-	
+
     // Enable RX interrupt
-    USART2.CTRLA |=  1 << USART_RXCIE_bp;        
+    USART2.CTRLA |=  1 << USART_RXCIE_bp;
 }
