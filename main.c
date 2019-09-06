@@ -24,15 +24,14 @@ CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT
 OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS
 SOFTWARE.
 */
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "mcc_generated_files/application_manager.h"
-#include "mcc_generated_files/led.h"
-#include "mcc_generated_files/sensors_handling.h"
 #include "mcc_generated_files/cloud/cloud_service.h"
+#include "mcc_generated_files/sensors_handling.h"
 #include "mcc_generated_files/debug_print.h"
+#include "mcc_generated_files/led.h"
 
 //This handles messages published from the MQTT server when subscribed
 void receivedFromCloud(uint8_t *topic, uint8_t *payload)
@@ -40,8 +39,7 @@ void receivedFromCloud(uint8_t *topic, uint8_t *payload)
     char *toggleToken = "\"toggle\":";
     char *subString;
 
-    if ((subString = strstr((char*)payload, toggleToken)))
-    {
+    if ((subString = strstr((char*)payload, toggleToken))) {
         LED_holdYellowOn( subString[strlen(toggleToken)] == '1' );
     }
 
@@ -52,28 +50,26 @@ void receivedFromCloud(uint8_t *topic, uint8_t *payload)
 // This will get called every CFG_SEND_INTERVAL second only while we have a valid Cloud connection
 void sendToCloud(void)
 {
-   static char json[70];
+    static char json[70];
 
-   int temp = SENSORS_getTempValue();
-   int light = SENSORS_getLightValue();
-   int len = sprintf(json, "{\"Light\":%d,\"Temp\":%d.%02d}",
-                                  light, temp/100, abs(temp)%100);
+    int temp = SENSORS_getTempValue();
+    int light = SENSORS_getLightValue();
+    int len = sprintf(json, "{\"Light\":%d,\"Temp\":%d.%02d}",
+                                light, temp/100, abs(temp)%100);
 
-   if (len >0) {
-      CLOUD_publishData((uint8_t*)json, len);
-      LED_flashYellow();
-   }
+    if (len >0) {
+        CLOUD_publishData((uint8_t*)json, len);
+        LED_flashYellow();
+    }
 }
-
 
 int main(void)
 {
-   application_init();
+    application_init();
 
-   while (1)
-   {
-      runScheduler();
-   }
+    while (1) {
+        runScheduler();
+    }
 
-   return 0;
+    return 0;
 }

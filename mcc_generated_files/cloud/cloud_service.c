@@ -79,16 +79,15 @@ void receivedFromCloud(uint8_t *topic, uint8_t *payload);
 bool isResetting = false;
 bool cloudResetTimerFlag = false;
 bool sendSubscribe = true;
-#define CLOUD_TASK_INTERVAL            500L
-#define CLOUD_MQTT_TIMEOUT_COUNT	      10000L  // 10 seconds max allowed to establish a connection
-#define MQTT_CONN_AGE_TIMEOUT          3600L   // 3600 seconds = 60minutes
-#define CLOUD_RESET_TIMEOUT            2000L   // 2 seconds
 
+#define CLOUD_TASK_INTERVAL             500L
+#define CLOUD_MQTT_TIMEOUT_COUNT      10000L    // 10 seconds max allowed to establish a connection
+#define MQTT_CONN_AGE_TIMEOUT          3600L    // 3600 seconds = 60minutes
+#define CLOUD_RESET_TIMEOUT            2000L    // 2 seconds
 
 // Create the timers for scheduler_timeout which runs these tasks
 timerStruct_t CLOUD_taskTimer            = {CLOUD_task};
 timerStruct_t mqttTimeoutTaskTimer       = {mqttTimeoutTask};
-
 timerStruct_t cloudResetTaskTimer       = {cloudResetTask};
 
 /** \brief MQTT publish handler call back table.
