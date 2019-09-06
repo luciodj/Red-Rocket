@@ -5,13 +5,13 @@
  * \copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \page License
- * 
+ *
  * Subject to your compliance with these terms, you may use Microchip software
  * and any derivatives exclusively with Microchip products. It is your
  * responsibility to comply with third party license terms applicable to your
  * use of third party software (including open source software) that may
  * accompany Microchip software.
- * 
+ *
  * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
  * EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
  * WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
@@ -172,7 +172,7 @@ ATCA_STATUS atca_jwt_finalize(
     }
 
     /* Create digest of the message store and store in the buffer */
-    status = atcac_sw_sha2_256((const uint8_t*)jwt->buf, jwt->cur, (uint8_t*)(jwt->buf + jwt->buflen - 32));
+    status = atcab_hw_sha2_256((const uint8_t*)jwt->buf, jwt->cur, (uint8_t*)(jwt->buf + jwt->buflen - 32));
     if (ATCA_SUCCESS != status)
     {
         return status;
@@ -325,7 +325,7 @@ ATCA_STATUS atca_jwt_verify(
         }
 
         /* Digest the token */
-        if (ATCA_SUCCESS != (status = atcac_sw_sha2_256((const uint8_t*)buf, pStr - buf - 1, digest)))
+        if (ATCA_SUCCESS != (status = atcab_hw_sha2_256((const uint8_t*)buf, pStr - buf - 1, digest)))
         {
             break;
         }
