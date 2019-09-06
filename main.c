@@ -39,42 +39,41 @@ void receivedFromCloud(uint8_t *topic, uint8_t *payload)
 {
     char *toggleToken = "\"toggle\":";
     char *subString;
-    
+
     if ((subString = strstr((char*)payload, toggleToken)))
     {
         LED_holdYellowOn( subString[strlen(toggleToken)] == '1' );
     }
 
-
     debug_printer(SEVERITY_NONE, LEVEL_NORMAL, "topic: %s", topic);
     debug_printer(SEVERITY_NONE, LEVEL_NORMAL, "payload: %s", payload);
 }
 
-// This will get called every 1 second only while we have a valid Cloud connection
+// This will get called every CFG_SEND_INTERVAL second only while we have a valid Cloud connection
 void sendToCloud(void)
 {
    static char json[70];
-         
-   // This part runs every CFG_SEND_INTERVAL seconds
-   int rawTemperature = SENSORS_getTempValue();
+
+   int temp = SENSORS_getTempValue();
    int light = SENSORS_getLightValue();
-   int len = sprintf(json, "{\"Light\":%d,\"Temp\":\"%d.%02d\"}", light,rawTemperature/100,abs(rawTemperature)%100);
+   int len = sprintf(json, "{\"Light\":%d,\"Temp\":%d.%02d}",
+                                  light, temp/100, abs(temp)%100);
 
    if (len >0) {
       CLOUD_publishData((uint8_t*)json, len);
       LED_flashYellow();
    }
 }
- 
- 
+
+
 int main(void)
 {
    application_init();
 
    while (1)
-   { 
-      runScheduler();  
+   {
+      runScheduler();
    }
-   
+
    return 0;
 }
