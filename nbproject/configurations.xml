@@ -220,26 +220,13 @@
       <logicalFolder name="MCC Generated Files"
                      displayName="MCC Generated Files"
                      projectFiles="true">
-        <logicalFolder name="cli" displayName="cli" projectFiles="true">
-          <itemPath>mcc_generated_files/cli/cli.c</itemPath>
-        </logicalFolder>
         <logicalFolder name="cloud" displayName="cloud" projectFiles="true">
-          <logicalFolder name="bsd_adapter" displayName="bsd_adapter" projectFiles="true">
-            <itemPath>mcc_generated_files/cloud/bsd_adapter/bsdWINC.c</itemPath>
-          </logicalFolder>
-          <logicalFolder name="crypto_client"
-                         displayName="crypto_client"
-                         projectFiles="true">
-            <itemPath>mcc_generated_files/cloud/crypto_client/crypto_client.c</itemPath>
-            <itemPath>mcc_generated_files/cloud/crypto_client/cryptoauthlib_main.c</itemPath>
-          </logicalFolder>
-          <logicalFolder name="mqtt_packetPopulation"
-                         displayName="mqtt_packetPopulation"
-                         projectFiles="true">
-            <itemPath>mcc_generated_files/cloud/mqtt_packetPopulation/mqtt_packetPopulate.c</itemPath>
-          </logicalFolder>
           <itemPath>mcc_generated_files/cloud/wifi_service.c</itemPath>
           <itemPath>mcc_generated_files/cloud/cloud_service.c</itemPath>
+          <itemPath>mcc_generated_files/cloud/bsd_adapter/bsdWINC.c</itemPath>
+          <itemPath>mcc_generated_files/cloud/mqtt_packetPopulation/mqtt_packetPopulate.c</itemPath>
+          <itemPath>mcc_generated_files/cloud/crypto_client/crypto_client.c</itemPath>
+          <itemPath>mcc_generated_files/cloud/crypto_client/cryptoauthlib_main.c</itemPath>
         </logicalFolder>
         <logicalFolder name="cryptoauthlib"
                        displayName="cryptoauthlib"
@@ -291,24 +278,11 @@
           <itemPath>mcc_generated_files/drivers/i2c_simple_master.c</itemPath>
           <itemPath>mcc_generated_files/drivers/timeout.c</itemPath>
         </logicalFolder>
-        <logicalFolder name="examples" displayName="examples" projectFiles="true">
-          <itemPath>mcc_generated_files/examples/twi0_master_example.c</itemPath>
-        </logicalFolder>
         <logicalFolder name="mqtt" displayName="mqtt" projectFiles="true">
-          <logicalFolder name="mqtt_comm_bsd"
-                         displayName="mqtt_comm_bsd"
-                         projectFiles="true">
-            <itemPath>mcc_generated_files/mqtt/mqtt_comm_bsd/mqtt_comm_layer.c</itemPath>
-          </logicalFolder>
-          <logicalFolder name="mqtt_core" displayName="mqtt_core" projectFiles="true">
-            <itemPath>mcc_generated_files/mqtt/mqtt_core/mqtt_core.c</itemPath>
-          </logicalFolder>
-          <logicalFolder name="mqtt_exchange_buffer"
-                         displayName="mqtt_exchange_buffer"
-                         projectFiles="true">
-            <itemPath>mcc_generated_files/mqtt/mqtt_exchange_buffer/mqtt_exchange_buffer.c</itemPath>
-          </logicalFolder>
           <itemPath>mcc_generated_files/mqtt/mqtt_packetTransfer_interface.c</itemPath>
+          <itemPath>mcc_generated_files/mqtt/mqtt_comm_bsd/mqtt_comm_layer.c</itemPath>
+          <itemPath>mcc_generated_files/mqtt/mqtt_core/mqtt_core.c</itemPath>
+          <itemPath>mcc_generated_files/mqtt/mqtt_exchange_buffer/mqtt_exchange_buffer.c</itemPath>
         </logicalFolder>
         <logicalFolder name="src" displayName="src" projectFiles="true">
           <itemPath>mcc_generated_files/src/twi0_master.c</itemPath>
@@ -370,6 +344,7 @@
         <itemPath>mcc_generated_files/device_config.c</itemPath>
         <itemPath>mcc_generated_files/led.c</itemPath>
         <itemPath>mcc_generated_files/debug_print.c</itemPath>
+        <itemPath>mcc_generated_files/cli/cli.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
     </logicalFolder>
@@ -1216,24 +1191,6 @@
         </AVR-LD>
       </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_write.c"
-            ex="true"
-            overriding="false">
-        <AVR-AR>
-        </AVR-AR>
-        <AVR-AS>
-        </AVR-AS>
-        <AVR-AS-PRE>
-        </AVR-AS-PRE>
-        <AVR-CPP>
-        </AVR-CPP>
-        <AVR-GCC>
-        </AVR-GCC>
-        <AVR-Global>
-        </AVR-Global>
-        <AVR-LD>
-        </AVR-LD>
-      </item>
-      <item path="mcc_generated_files/examples/twi0_master_example.c"
             ex="true"
             overriding="false">
         <AVR-AR>
