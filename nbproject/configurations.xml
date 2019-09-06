@@ -981,6 +981,14 @@
                   value=""/>
         <property key="warningmessagebreakoptions.warningmessages" value="holdstate"/>
       </Simulator>
+      <item path="mcc_generated_files/cryptoauthlib/lib/tls/atcatls.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/tls/atcatls_cfg.c"
+            ex="true"
+            overriding="false">
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>
