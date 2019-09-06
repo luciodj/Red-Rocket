@@ -37,11 +37,6 @@
           <itemPath>mcc_generated_files/config/conf_winc_pins.h</itemPath>
           <itemPath>mcc_generated_files/config/mqtt_config.h</itemPath>
         </logicalFolder>
-        <logicalFolder name="credentials_storage"
-                       displayName="credentials_storage"
-                       projectFiles="true">
-          <itemPath>mcc_generated_files/credentials_storage/credentials_storage.h</itemPath>
-        </logicalFolder>
         <logicalFolder name="cryptoauthlib"
                        displayName="cryptoauthlib"
                        projectFiles="true">
@@ -245,11 +240,6 @@
           </logicalFolder>
           <itemPath>mcc_generated_files/cloud/wifi_service.c</itemPath>
           <itemPath>mcc_generated_files/cloud/cloud_service.c</itemPath>
-        </logicalFolder>
-        <logicalFolder name="credentials_storage"
-                       displayName="credentials_storage"
-                       projectFiles="true">
-          <itemPath>mcc_generated_files/credentials_storage/credentials_storage.c</itemPath>
         </logicalFolder>
         <logicalFolder name="cryptoauthlib"
                        displayName="cryptoauthlib"
@@ -474,7 +464,7 @@
       </AVR-CPP>
       <AVR-GCC>
         <property key="additional-warnings" value="true"/>
-        <property key="call-prologues" value="false"/>
+        <property key="call-prologues" value="true"/>
         <property key="default-bitfield-type" value="true"/>
         <property key="default-char-type" value="true"/>
         <property key="extra-include-directories" value=""/>
@@ -955,10 +945,6 @@
                   value=""/>
         <property key="warningmessagebreakoptions.warningmessages" value="holdstate"/>
       </Simulator>
-      <item path="mcc_generated_files/credentials_storage/credentials_storage.c"
-            ex="true"
-            overriding="false">
-      </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_aes.c"
             ex="true"
             overriding="false">
