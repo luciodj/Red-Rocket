@@ -1334,6 +1334,10 @@
         <AVR-LD>
         </AVR-LD>
       </item>
+      <item path="mcc_generated_files/winc/spi_flash/source/spi_flash.c"
+            ex="true"
+            overriding="false">
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>

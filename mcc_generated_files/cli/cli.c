@@ -47,8 +47,7 @@
 #define MAX_PUB_KEY_LEN         200
 #define NEWLINE                 "\r\n"
 
-#define UNKNOWN_CMD_MSG "--------------------------------------------" NEWLINE\
-                        "Unknown command. List of available commands:" NEWLINE\
+#define UNKNOWN_CMD_MSG "Unknown command! Available commands:" NEWLINE\
                         "reset"NEWLINE\
                         "device"NEWLINE\
                         "key"NEWLINE\
@@ -57,7 +56,7 @@
                         "cli_version" NEWLINE\
                         "wifi <ssid>[,<pass>,[authType]]" NEWLINE\
                         "debug" NEWLINE\
-                        "--------------------------------------------"NEWLINE"\4"
+                        NEWLINE"\4"
 
 static char command[MAX_COMMAND_SIZE];
 static bool isCommandReceived = false;
