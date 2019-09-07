@@ -47,7 +47,7 @@ SOFTWARE.
 // wifi credential buffers
 char ssid[MAX_WIFI_CREDENTIALS_LENGTH];
 char pass[MAX_WIFI_CREDENTIALS_LENGTH];
-char authType[2];
+uint8_t authType;
 
 // Scheduler
 uint32_t ntpTimeFetchTask(void *payload);
@@ -127,7 +127,7 @@ bool wifi_connectToAp(uint8_t passed_wifi_creds)
 
 	if(passed_wifi_creds == NEW_CREDENTIALS)
 	{
-		e=m2m_wifi_connect((char *)ssid, sizeof(ssid), atoi((char*)authType), (char *)pass, M2M_WIFI_CH_ALL);
+		e=m2m_wifi_connect((char *)ssid, sizeof(ssid), authType, (char *)pass, M2M_WIFI_CH_ALL);
 	}
 	else
 	{
@@ -198,7 +198,7 @@ void CREDENTIALS_STORAGE_clearWifiCredentials(void)
 {
 	memset(ssid, 0, sizeof(ssid));
 	memset(pass, 0, sizeof(pass));
-	memset(authType, 0 ,sizeof(authType));
+	authType = 0;
 }
 
 static void wifiCallback(uint8_t msgType, void *pMsg)
@@ -279,7 +279,7 @@ static void wifiCallback(uint8_t msgType, void *pMsg)
             tstrM2MProvisionInfo *pstrProvInfo = (tstrM2MProvisionInfo*)pMsg;
             if(pstrProvInfo->u8Status == M2M_SUCCESS)
             {
-			   sprintf((char*)authType, "%d", pstrProvInfo->u8SecType);
+			   authType = pstrProvInfo->u8SecType;
                debug_printInfo("%s",pstrProvInfo->au8SSID);
 			   strcpy(ssid, (char *)pstrProvInfo->au8SSID);
 			   strcpy(pass, (char *)pstrProvInfo->au8Password);

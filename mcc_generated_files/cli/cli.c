@@ -39,9 +39,9 @@
 #include "../mcc.h"
 
 // WINC authentication type codes
-#define WIFI_PARAMS_OPEN        '1'
-#define WIFI_PARAMS_PSK         '2'
-#define WIFI_PARAMS_WEP         '3'
+#define WIFI_PARAMS_OPEN        1
+#define WIFI_PARAMS_PSK         2
+#define WIFI_PARAMS_WEP         3
 
 #define MAX_COMMAND_SIZE        100
 #define MAX_PUB_KEY_LEN         200
@@ -177,7 +177,6 @@ static void set_wifi_auth(char *ssid_pwd_auth)
 	uint8_t i;
     bool res = true;
 
-    authType[0] = '0'; authType[1] = '\0'; // init the authentication type
     for(i=0; i<=2; i++)
         credentials[i] = NULL;
 
@@ -191,16 +190,19 @@ static void set_wifi_auth(char *ssid_pwd_auth)
 
     if (credentials[0] != NULL)
     { // infer the authtype from the number of parameters passed
-        if (credentials[1]==NULL && credentials[2]==NULL) // provided only ssid
-            authType[0] = WIFI_PARAMS_OPEN;
+        authType = 0; // init the authentication type (invalid)
+        if (credentials[1]==NULL && credentials[2]==NULL)
+            // provided only ssid
+            authType = WIFI_PARAMS_OPEN;
         else if (credentials[2]==NULL)
-        // provided ssid AND password
-            authType[0] = WIFI_PARAMS_PSK;  // default to PSK
-        else // ssid, psw AND authtype code provided
-            authType[0] = credentials[2][0];
+            // provided ssid AND password
+            authType = WIFI_PARAMS_PSK;  // default to PSK
+        else
+            // provided ssid, psw AND authtype code
+            authType = atoi(credentials[2]);
     }
 
-    switch (authType[0])
+    switch (authType)
     {
         case WIFI_PARAMS_OPEN:
                 strncpy(ssid, credentials[0], MAX_WIFI_CREDENTIALS_LENGTH-1);

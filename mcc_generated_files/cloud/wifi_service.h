@@ -41,7 +41,7 @@ SOFTWARE.
 
 extern char ssid[MAX_WIFI_CREDENTIALS_LENGTH];
 extern char pass[MAX_WIFI_CREDENTIALS_LENGTH];
-extern char authType[2];
+extern uint8_t authType;
 
 // If you pass a callback function in here it will be called when the AP state changes. Pass NULL if you do not want that.
 void wifi_init(void (*funcPtr)(uint8_t), uint8_t  mode);
