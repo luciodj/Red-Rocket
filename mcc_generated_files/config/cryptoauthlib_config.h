@@ -14,7 +14,7 @@
 #endif
 
 #ifndef ATCA_PRINTF
-#define ATCA_PRINTF 1
+//#define ATCA_PRINTF 1
 #endif
 
 #ifndef CONF_CRYPTOAUTHLIB_DEBUG_HELPER

@@ -44,7 +44,7 @@
 #endif
 
 #ifndef ATCA_PRINTF
-#error : This project uses ATCA_debug_print. Please add "ATCA_PRINTF" to toolchain symbols.
+//#error : This project uses ATCA_debug_print. Please add "ATCA_PRINTF" to toolchain symbols.
 #endif
 
 const uint8_t public_key_x509_header[] = { 0x30, 0x59, 0x30, 0x13, 0x06, 0x07, 0x2A, 0x86,
