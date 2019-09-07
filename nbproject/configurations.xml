@@ -353,6 +353,8 @@
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
       <itemPath>MyConfig.mc3</itemPath>
+      <itemPath>LICENSE</itemPath>
+      <itemPath>README.md</itemPath>
     </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
