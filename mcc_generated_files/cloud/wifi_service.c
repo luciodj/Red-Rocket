@@ -30,7 +30,6 @@ SOFTWARE.
 #include <avr/wdt.h>
 #include <stdio.h>
 #include "wifi_service.h"
-#include "../winc/driver/include/m2m_wifi.h"
 #include "../drivers/timeout.h"
 #include "../application_manager.h"
 #include "../debug_print.h"
@@ -45,8 +44,8 @@ SOFTWARE.
 #define SOFT_AP_CONNECT_RETRY_INTERVAL  1000L
 
 // wifi credential buffers
-char ssid[MAX_WIFI_CREDENTIALS_LENGTH];
-char pass[MAX_WIFI_CREDENTIALS_LENGTH];
+char ssid[M2M_MAX_SSID_LEN];
+char pass[M2M_MAX_PSK_LEN];
 uint8_t authType;
 
 // Scheduler

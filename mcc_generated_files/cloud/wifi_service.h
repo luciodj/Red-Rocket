@@ -30,17 +30,15 @@ SOFTWARE.
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "../winc/driver/include/m2m_wifi.h"
 
-#define MAX_WIFI_CRED_LENGTH 31
 #define DEFAULT_CREDENTIALS 0
 #define NEW_CREDENTIALS     1
 #define WIFI_SOFT_AP  0
 #define WIFI_DEFAULT  1
 
-#define MAX_WIFI_CREDENTIALS_LENGTH 31
-
-extern char ssid[MAX_WIFI_CREDENTIALS_LENGTH];
-extern char pass[MAX_WIFI_CREDENTIALS_LENGTH];
+extern char ssid[M2M_MAX_SSID_LEN];
+extern char pass[M2M_MAX_PSK_LEN];
 extern uint8_t authType;
 
 // If you pass a callback function in here it will be called when the AP state changes. Pass NULL if you do not want that.

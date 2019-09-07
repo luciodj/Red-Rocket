@@ -363,7 +363,7 @@
         <targetDevice>ATmega4808</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>Simulator</platformTool>
+        <platformTool>nEdbgTool</platformTool>
         <languageToolchain>AVR</languageToolchain>
         <languageToolchainVersion>5.4.0</languageToolchainVersion>
         <platform>4</platform>
@@ -1337,7 +1337,52 @@
       <item path="mcc_generated_files/winc/spi_flash/source/spi_flash.c"
             ex="true"
             overriding="false">
+        <AVR-AR>
+        </AVR-AR>
+        <AVR-AS>
+        </AVR-AS>
+        <AVR-AS-PRE>
+        </AVR-AS-PRE>
+        <AVR-CPP>
+        </AVR-CPP>
+        <AVR-GCC>
+        </AVR-GCC>
+        <AVR-Global>
+        </AVR-Global>
+        <AVR-LD>
+        </AVR-LD>
       </item>
+      <nEdbgTool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="communication.interface" value="updi"/>
+        <property key="communication.speed" value="1"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="true"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.exclude.configurationmemory" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.instruction.ram.ranges"
+                  value="${memories.instruction.ram.ranges}"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.ranges" value="0-5fff"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preservedataflash.ranges"
+                  value="${memories.dataflash.default}"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveeeprom.ranges" value="1400-14ff"/>
+        <property key="programoptions.preserveprogram.ranges" value="0-5fff"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="voltagevalue" value=""/>
+      </nEdbgTool>
     </conf>
   </confs>
 </configurationDescriptor>

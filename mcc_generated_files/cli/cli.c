@@ -204,20 +204,24 @@ static void set_wifi_auth(char *ssid_pwd_auth)
     switch (authType)
     {
         case WIFI_PARAMS_OPEN:
-                strncpy(ssid, credentials[0], MAX_WIFI_CREDENTIALS_LENGTH-1);
+                strncpy(ssid, credentials[0], M2M_MAX_SSID_LEN-1);
                 pass[0] = '\0';
             break;
 
         case WIFI_PARAMS_PSK:
 		case WIFI_PARAMS_WEP:
-                strncpy(ssid, credentials[0], MAX_WIFI_CREDENTIALS_LENGTH-1);
-                strncpy(pass, credentials[1], MAX_WIFI_CREDENTIALS_LENGTH-1);
+                strncpy(ssid, credentials[0], M2M_MAX_SSID_LEN-1);
+                strncpy(pass, credentials[1], M2M_MAX_PSK_LEN-1);
             break;
 
         default:
 			res = false;
             break;
     }
+    printf("ssid:%s\n", ssid);
+    printf("psw :%s\n", pass);
+    printf("type:%d\n", authType);
+    printf("res :%d\n", res);
 
 	if (res)
 	{
