@@ -228,10 +228,24 @@
           <itemPath>mcc_generated_files/cloud/crypto_client/crypto_client.c</itemPath>
           <itemPath>mcc_generated_files/cloud/crypto_client/cryptoauthlib_main.c</itemPath>
         </logicalFolder>
+        <logicalFolder name="credentials_storage"
+                       displayName="credentials_storage"
+                       projectFiles="true">
+          <itemPath>mcc_generated_files/credentials_storage/credentials_storage.c</itemPath>
+        </logicalFolder>
         <logicalFolder name="cryptoauthlib"
                        displayName="cryptoauthlib"
                        projectFiles="true">
           <logicalFolder name="lib" displayName="lib" projectFiles="true">
+            <logicalFolder name="atcacert" displayName="atcacert" projectFiles="true">
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_client.c</itemPath>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_date.c</itemPath>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_def.c</itemPath>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_host_sw.c</itemPath>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_host_hw.c</itemPath>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_pem.c</itemPath>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_der.c</itemPath>
+            </logicalFolder>
             <logicalFolder name="basic" displayName="basic" projectFiles="true">
               <itemPath>mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_checkmac.c</itemPath>
               <itemPath>mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_secureboot.c</itemPath>
@@ -259,13 +273,30 @@
               <itemPath>mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_gendig.c</itemPath>
               <itemPath>mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_write.c</itemPath>
             </logicalFolder>
+            <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
+              <logicalFolder name="hashes" displayName="hashes" projectFiles="true">
+                <itemPath>mcc_generated_files/cryptoauthlib/lib/crypto/hashes/sha1_routines.c</itemPath>
+                <itemPath>mcc_generated_files/cryptoauthlib/lib/crypto/hashes/sha2_routines.c</itemPath>
+              </logicalFolder>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/crypto/atca_crypto_sw_sha1.c</itemPath>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/crypto/atca_crypto_sw_sha2.c</itemPath>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/crypto/atca_crypto_sw_ecdsa.c</itemPath>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/crypto/atca_crypto_sw_rand.c</itemPath>
+            </logicalFolder>
             <logicalFolder name="hal" displayName="hal" projectFiles="true">
               <itemPath>mcc_generated_files/cryptoauthlib/lib/hal/hal_timer.c</itemPath>
               <itemPath>mcc_generated_files/cryptoauthlib/lib/hal/hal_i2c.c</itemPath>
               <itemPath>mcc_generated_files/cryptoauthlib/lib/hal/atca_hal.c</itemPath>
             </logicalFolder>
+            <logicalFolder name="host" displayName="host" projectFiles="true">
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/host/atca_host.c</itemPath>
+            </logicalFolder>
             <logicalFolder name="jwt" displayName="jwt" projectFiles="true">
               <itemPath>mcc_generated_files/cryptoauthlib/lib/jwt/atca_jwt.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="tls" displayName="tls" projectFiles="true">
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/tls/atcatls.c</itemPath>
+              <itemPath>mcc_generated_files/cryptoauthlib/lib/tls/atcatls_cfg.c</itemPath>
             </logicalFolder>
             <itemPath>mcc_generated_files/cryptoauthlib/lib/atca_device.c</itemPath>
             <itemPath>mcc_generated_files/cryptoauthlib/lib/atca_execution.c</itemPath>
@@ -357,6 +388,13 @@
       <itemPath>README.md</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>mcc_generated_files/cryptoauthlib/lib/crypto</Elem>
+    <Elem>mcc_generated_files/cryptoauthlib/lib/atcacert</Elem>
+    <Elem>mcc_generated_files/cryptoauthlib/lib/host</Elem>
+    <Elem>mcc_generated_files/cryptoauthlib/lib/tls</Elem>
+    <Elem>mcc_generated_files/credentials_storage</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
@@ -922,6 +960,38 @@
                   value=""/>
         <property key="warningmessagebreakoptions.warningmessages" value="holdstate"/>
       </Simulator>
+      <item path="mcc_generated_files/credentials_storage/credentials_storage.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_client.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_date.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_def.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_der.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_host_hw.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_host_sw.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/atcacert/atcacert_pem.c"
+            ex="true"
+            overriding="false">
+      </item>
       <item path="mcc_generated_files/cryptoauthlib/lib/basic/atca_basic_aes.c"
             ex="true"
             overriding="false">
@@ -1209,6 +1279,42 @@
         </AVR-Global>
         <AVR-LD>
         </AVR-LD>
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/crypto/atca_crypto_sw_ecdsa.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/crypto/atca_crypto_sw_rand.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/crypto/atca_crypto_sw_sha1.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/crypto/atca_crypto_sw_sha2.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/crypto/hashes/sha1_routines.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/crypto/hashes/sha2_routines.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/host/atca_host.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/tls/atcatls.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/cryptoauthlib/lib/tls/atcatls_cfg.c"
+            ex="true"
+            overriding="false">
       </item>
       <item path="mcc_generated_files/winc/driver/source/m2m_ate_mode.c"
             ex="true"
