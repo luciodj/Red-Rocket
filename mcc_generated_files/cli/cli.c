@@ -38,11 +38,6 @@
 #include "../debug_print.h"
 #include "../mcc.h"
 
-// WINC authentication type codes
-#define WIFI_PARAMS_OPEN        1
-#define WIFI_PARAMS_PSK         2
-#define WIFI_PARAMS_WEP         3
-
 #define MAX_COMMAND_SIZE        100
 #define MAX_PUB_KEY_LEN         200
 #define NEWLINE                 "\r\n"
@@ -189,13 +184,13 @@ static void set_wifi_auth(char *ssid_pwd_auth)
 
     if (credentials[0] != NULL)
     { // infer the authtype from the number of parameters passed
-        authType = 0; // init the authentication type (invalid)
+        authType = M2M_WIFI_SEC_INVALID; // init the authentication type
         if (credentials[1]==NULL && credentials[2]==NULL)
             // provided only ssid
-            authType = WIFI_PARAMS_OPEN;
+            authType = M2M_WIFI_SEC_OPEN; //WIFI_PARAMS_OPEN;
         else if (credentials[2]==NULL)
             // provided ssid AND password
-            authType = WIFI_PARAMS_PSK;  // default to PSK
+            authType = M2M_WIFI_SEC_WPA_PSK;  // default to PSK
         else
             // provided ssid, psw AND authtype code
             authType = atoi(credentials[2]);
@@ -203,13 +198,13 @@ static void set_wifi_auth(char *ssid_pwd_auth)
 
     switch (authType)
     {
-        case WIFI_PARAMS_OPEN:
+        case M2M_WIFI_SEC_OPEN:
                 strncpy(ssid, credentials[0], M2M_MAX_SSID_LEN-1);
                 pass[0] = '\0';
             break;
 
-        case WIFI_PARAMS_PSK:
-		case WIFI_PARAMS_WEP:
+        case M2M_WIFI_SEC_WPA_PSK:
+		case M2M_WIFI_SEC_WEP:
                 strncpy(ssid, credentials[0], M2M_MAX_SSID_LEN-1);
                 strncpy(pass, credentials[1], M2M_MAX_PSK_LEN-1);
             break;
@@ -218,10 +213,10 @@ static void set_wifi_auth(char *ssid_pwd_auth)
 			res = false;
             break;
     }
-    printf("ssid:%s\n", ssid);
-    printf("psw :%s\n", pass);
-    printf("type:%d\n", authType);
-    printf("res :%d\n", res);
+//    printf("ssid:%s\n", ssid);
+//    printf("psw :%s\n", pass);
+//    printf("type:%d\n", authType);
+//    printf("res :%d\n", res);
 
 	if (res)
 	{

@@ -32,12 +32,10 @@ SOFTWARE.
 #include "wifi_service.h"
 #include "../drivers/timeout.h"
 #include "../application_manager.h"
-#include "../debug_print.h"
 #include "../config/IoT_Sensor_Node_config.h"
 #include "../config/conf_winc.h"
 #include "../config/mqtt_config.h"
 #include "../winc/socket/include/socket.h"
-#include "../led.h"
 
 #define CLOUD_WIFI_TASK_INTERVAL        50L
 #define CLOUD_NTP_TASK_INTERVAL         500L

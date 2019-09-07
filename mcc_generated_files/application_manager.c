@@ -28,22 +28,17 @@ SOFTWARE.
 #include <string.h>
 #include <time.h>
 #include <stdio.h>
-#include "utils/atomic.h"
-#include <avr/wdt.h>
+
 #include "application_manager.h"
-#include "mcc.h"
-#include "include/pin_manager.h"
 #include "config/IoT_Sensor_Node_config.h"
 #include "config/conf_winc.h"
-#include "cloud/cloud_service.h"
 #include "cloud/crypto_client/cryptoauthlib_main.h"
 #include "cloud/crypto_client/crypto_client.h"
 #include "cloud/wifi_service.h"
 #if CFG_ENABLE_CLI
 #include "cli/cli.h"
 #endif
-#include "led.h"
-#include "debug_print.h"
+
 
 #define MAIN_DATATASK_INTERVAL 100L
 // The debounce time is currently close to 2 Seconds.

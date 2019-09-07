@@ -24,14 +24,9 @@ CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT
 OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS
 SOFTWARE.
 */
-#include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include "mcc_generated_files/application_manager.h"
-#include "mcc_generated_files/cloud/cloud_service.h"
 #include "mcc_generated_files/sensors_handling.h"
-#include "mcc_generated_files/debug_print.h"
-#include "mcc_generated_files/led.h"
 
 //This handles messages published from the MQTT server when subscribed
 void receivedFromCloud(uint8_t *topic, uint8_t *payload)

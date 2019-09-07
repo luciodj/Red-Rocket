@@ -28,6 +28,13 @@ SOFTWARE.
 #ifndef APPLICATION_MANAGER_H_
 #define APPLICATION_MANAGER_H_
 
+#include "mcc.h"
+#include "led.h"
+#include "debug_print.h"
+#include "utils/atomic.h"
+#include <avr/wdt.h>
+#include "cloud/cloud_service.h"
+
 typedef union
 {
     uint8_t allBits;
