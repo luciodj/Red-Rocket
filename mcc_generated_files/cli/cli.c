@@ -30,22 +30,22 @@
 #include <string.h>
 #include <avr/wdt.h>
 
-#include "../include/usart2.h"
 #include "cli.h"
+#include "../cloud/wifi_service.h"
+#include "../cloud/cloud_service.h"
 #include "../cloud/crypto_client/crypto_client.h"
-#include "../credentials_storage/credentials_storage.h"
 #include "../mqtt/mqtt_core/mqtt_core.h"
 #include "../debug_print.h"
-#include "../cloud/wifi_service.h"
-#include "../mqtt/mqtt_comm_bsd/mqtt_comm_layer.h"
-#include "../cloud/cloud_service.h"
+#include "../mcc.h"
 
-#define WIFI_PARAMS_OPEN    1
-#define WIFI_PARAMS_PSK     2
-#define WIFI_PARAMS_WEP     3
+// WINC authentication type codes
+#define WIFI_PARAMS_OPEN        '1'
+#define WIFI_PARAMS_PSK         '2'
+#define WIFI_PARAMS_WEP         '3'
+
 #define MAX_COMMAND_SIZE        100
 #define MAX_PUB_KEY_LEN         200
-#define NEWLINE "\r\n"
+#define NEWLINE                 "\r\n"
 
 #define UNKNOWN_CMD_MSG "--------------------------------------------" NEWLINE\
                         "Unknown command. List of available commands:" NEWLINE\
@@ -175,65 +175,58 @@ static void set_wifi_auth(char *ssid_pwd_auth)
     char *pch;
     uint8_t params = 0;
 	uint8_t i;
+    bool res = true;
 
-    for(i=0;i<=2;i++)credentials[i]='\0';
+    authType[0] = '0'; authType[1] = '\0'; // init the authentication type
+    for(i=0; i<=2; i++)
+        credentials[i] = NULL;
 
-    pch = strtok (ssid_pwd_auth, ",");
-    credentials[0]=pch;
-
+    pch = strtok(ssid_pwd_auth, ",");
     while (pch != NULL && params <= 2)
-    {
+    { // count the comma separated parameters passed
         credentials[params] = pch;
         params++;
-        pch = strtok (NULL, ",");
-
+        pch = strtok(NULL, ",");
     }
 
-    if(credentials[0]!=NULL)
-    {
-        if(credentials[1]==NULL && credentials[2]==NULL) params=1;
-        else if(credentials[1]!= NULL && credentials[2]== NULL)
-        {
-            params=atoi(credentials[1]);//Resuse the same variable to store the auth type
-            if (params==2 || params==3)params=5;
-            else if(params==1);
-            else params=2;
-        }
-		else params = atoi(credentials[2]);
+    if (credentials[0] != NULL)
+    { // infer the authtype from the number of parameters passed
+        if (credentials[1]==NULL && credentials[2]==NULL) // provided only ssid
+            authType[0] = WIFI_PARAMS_OPEN;
+        else if (credentials[2]==NULL)
+        // provided ssid AND password
+            authType[0] = WIFI_PARAMS_PSK;  // default to PSK
+        else // ssid, psw AND authtype code provided
+            authType[0] = credentials[2][0];
     }
 
-    switch (params)
+    switch (authType[0])
     {
         case WIFI_PARAMS_OPEN:
-                strncpy(ssid, credentials[0],MAX_WIFI_CREDENTIALS_LENGTH-1);
-                strcpy(pass, "\0");
-                strcpy(authType, "1");
+                strncpy(ssid, credentials[0], MAX_WIFI_CREDENTIALS_LENGTH-1);
+                pass[0] = '\0';
             break;
 
         case WIFI_PARAMS_PSK:
 		case WIFI_PARAMS_WEP:
-                strncpy(ssid, credentials[0],MAX_WIFI_CREDENTIALS_LENGTH-1);
-                strncpy(pass, credentials[1],MAX_WIFI_CREDENTIALS_LENGTH-1);
-                sprintf(authType, "%d", params);
+                strncpy(ssid, credentials[0], MAX_WIFI_CREDENTIALS_LENGTH-1);
+                strncpy(pass, credentials[1], MAX_WIFI_CREDENTIALS_LENGTH-1);
             break;
 
         default:
-			params = 0;
+			res = false;
             break;
     }
-	if (params)
+
+	if (res)
 	{
 		printf("OK\r\n\4");
         if(CLOUD_isConnected())
-        {
             MQTT_Close(MQTT_GetClientConnectionInfo());
-        }
 		wifi_disconnectFromAp();
 	}
 	else
-	{
-		printf("Error. Wi-Fi command format is wifi <ssid>[,<pass>,[authType]]\r\n\4");
-	}
+		printf("Error: command format is wifi <ssid>[,<pass>,[authType]]\r\n\4");
 }
 
 static void reconnect_cmd(char *pArg)
@@ -270,7 +263,7 @@ static void set_debug_level(char *pArg)
 static void get_public_key(char *pArg)
 {
     char key_pem_format[MAX_PUB_KEY_LEN];
-    (void)pArg;
+//    (void)pArg;
 
     if (CRYPTO_CLIENT_printPublicKey(key_pem_format) == NO_ERROR)
     {
