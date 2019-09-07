@@ -12,13 +12,13 @@
  * \copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \page License
- * 
+ *
  * Subject to your compliance with these terms, you may use Microchip software
  * and any derivatives exclusively with Microchip products. It is your
  * responsibility to comply with third party license terms applicable to your
  * use of third party software (including open source software) that may
  * accompany Microchip software.
- * 
+ *
  * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
  * EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
  * WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
@@ -276,10 +276,10 @@ ATCA_STATUS atcab_hw_sha2_256_update(atca_sha256_ctx_t* ctx, const uint8_t* data
 ATCA_STATUS atcab_hw_sha2_256_finish(atca_sha256_ctx_t* ctx, uint8_t* digest)
 {
     ATCA_STATUS status = ATCA_SUCCESS;
+/* this should really be an #iddef... no need to check device type at runtime...
     uint32_t msg_size_bits;
     uint32_t pad_zero_count;
     uint16_t digest_size;
-
     if (_gDevice->mIface->mIfaceCFG->devtype == ATSHA204A)
     {
         // ATSHA204A only implements the raw 64-byte block operation, but
@@ -324,6 +324,7 @@ ATCA_STATUS atcab_hw_sha2_256_finish(atca_sha256_ctx_t* ctx, uint8_t* digest)
         }
     }
     else
+    */
     {
         status = atcab_sha_end(digest, ctx->block_size, ctx->block);
         if (status != ATCA_SUCCESS)
