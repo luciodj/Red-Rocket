@@ -13,13 +13,13 @@
  * \copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \page License
- * 
+ *
  * Subject to your compliance with these terms, you may use Microchip software
  * and any derivatives exclusively with Microchip products. It is your
  * responsibility to comply with third party license terms applicable to your
  * use of third party software (including open source software) that may
  * accompany Microchip software.
- * 
+ *
  * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
  * EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
  * WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
@@ -348,12 +348,13 @@ ATCA_STATUS atcab_read_config_zone(uint8_t* config_data)
             status = ATCA_BAD_PARAM;
             break;
         }
-
+/* this should be #ifdef-ed
         if (_gDevice->mIface->mIfaceCFG->devtype == ATSHA204A)
         {
             status = atcab_read_bytes_zone(ATCA_ZONE_CONFIG, 0, 0x00, config_data, ATCA_SHA_CONFIG_SIZE);
         }
         else
+ */
         {
             status = atcab_read_bytes_zone(ATCA_ZONE_CONFIG, 0, 0x00, config_data, ATCA_ECC_CONFIG_SIZE);
         }
@@ -419,7 +420,9 @@ ATCA_STATUS atcab_cmp_config_zone(uint8_t* config_data, bool* same_config)
             break;
         }
 
+        /* this should be #ifdef-ed
         if (_gDevice->mIface->mIfaceCFG->devtype == ATECC608A)
+         */
         {
             /* Skip Counter[0], Counter[1], which can change during operation */
 
@@ -433,12 +436,12 @@ ATCA_STATUS atcab_cmp_config_zone(uint8_t* config_data, bool* same_config)
             /* Skip UserExtra, UserExtraAdd, LockValue, LockConfig, and SlotLocked */
 
         }
-        else
-        {
-            /* Skip the counter & LastKeyUse bytes [52-83] */
-            /* Skip User Extra & Selector [84-85] */
-            /* Skip all lock bytes [86-89] */
-        }
+//        else
+//        {
+//            /* Skip the counter & LastKeyUse bytes [52-83] */
+//            /* Skip User Extra & Selector [84-85] */
+//            /* Skip all lock bytes [86-89] */
+//        }
 
         if (90 < config_size)
         {

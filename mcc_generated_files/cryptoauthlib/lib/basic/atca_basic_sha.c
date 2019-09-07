@@ -454,14 +454,14 @@ ATCA_STATUS atcab_sha_hmac_finish(atca_hmac_sha256_ctx_t *ctx, uint8_t* digest, 
     uint8_t mode = SHA_MODE_HMAC_END;
     uint16_t digest_size = 32;
 
-    if (ATECC608A == _gDevice->mIface->mIfaceCFG->devtype)
+//    if (ATECC608A == _gDevice->mIface->mIfaceCFG->devtype)
     {
         mode = SHA_MODE_608_HMAC_END;
     }
-    else if (target != SHA_MODE_TARGET_TEMPKEY)
-    {
-        return ATCA_BAD_PARAM;
-    }
+//    else if (target != SHA_MODE_TARGET_TEMPKEY)
+//    {
+//        return ATCA_BAD_PARAM;
+//    }
 
     mode |= target;
 
