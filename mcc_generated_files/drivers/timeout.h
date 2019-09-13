@@ -27,40 +27,78 @@
 #include <stdbool.h>
 
 /*
-*   Please note that the timer tick is different from the timer period. 
+*   Please note that the timer tick is different from the timer period.
 *   A tick occurs each time the peripheral timer increases its count
-*   The timer period is when the number of ticks reaches its specified maximum and 
-*      the timer overflow interrupt occurs. 
+*   The timer period is when the number of ticks reaches its specified maximum and
+*      the timer overflow interrupt occurs.
 *   This library sets the timer period internally as needed
 */
 #define INLINE
 
-// mSec to Ticks and Ticks to mSec conversion. These values are based on the minimum period of the TMRx peripheral
-// Note that these values have been rounded to the nearest power of two to make the calculations faster at runtime
-#define timeout_mSecToTicks(a)     ( ((uint32_t)(a)) * 32UL )
-#define timeout_ticksToMsec(a)     ( ((uint32_t)(a)) / 32UL )
+/** Datatype used to hold the number of ticks until a timer expires */
+typedef uint16_t ticks;
+#define MAX_BASE_PERIOD     32767   // related to ticks definition (16 or 32-bit)
 
-typedef  uint32_t (*timercallback_ptr_t)(void *payload);
+/** Typedef for the function pointer for the timeout callback function */
+typedef uint32_t (*timercallback_ptr_t)(void *payload);
 
-typedef struct tmrStruct {
-    timercallback_ptr_t  callbackPtr;
-    void* payload;
-    struct tmrStruct*  next;
-    uint32_t absoluteTime;
+/** Data structure completely describing one timer */
+typedef struct timerStruct_s {
+	timercallback_ptr_t    callback; ///< Pointer to a callback function that is called when this timer expires
+	void *                 payload; ///< Pointer to data that user would like to pass along to the callback function
+	struct timerStruct_s *next;    ///< Pointer to a linked list of all timers that have expired and whose callback
+	                                ///functions are due to be called
+	ticks period;   ///< The number of ticks the timer will count before it expires
+    ticks due;
 } timerStruct_t;
 
+//********************************************************
+// The following functions form the API for scheduler mode.
+//********************************************************
+
+/**
+ * \brief Initialize the timer used and isr call back
+ *
+ * \return True if successful, False if the
+ */
 void timeout_initialize(void);
-void timeout_create(timerStruct_t *timer, uint32_t timeout);
-void timeout_delete(timerStruct_t *timer);
-void timeout_flushAll(void);
-bool timeout_hasPendingTimeouts(void);
-bool timeout_hasPendingCallbacks(void);
-INLINE void timeout_callNextCallback(void);
-void timeout_isr(void);
 
-void timeout_startTimer(timerStruct_t *timer);
-uint32_t timeout_stopTimer(timerStruct_t *timer);
+/**
+ * \brief Schedule the specified timer task to execute at the specified time
+ *
+ * \param[in] timer Pointer to struct describing the task to execute
+ * \param[in] ms    Number of ms to wait before executing the task
+ *
+ * \return    True if successful, False if duration (ms) exceed max allowed
+ *            Hint: if failing, change ticks from uint16_ to uint32_t
+ */
+bool timeout_create(timerStruct_t *task, uint32_t ms);
 
-uint32_t timeout_getTimeRemaining(timerStruct_t *timer);
+/**
+ * \brief Delete the specified timer task so it won't be executed
+ *
+ * \param[in] timer Pointer to struct describing the task to execute
+ *
+ * \return Nothing
+ */
+void timeout_delete(timerStruct_t *task);
+
+/**
+ * \brief Delete all scheduled timer tasks
+ *
+ * \return Nothing
+ */
+void timeout_flush(void);
+
+/**
+ * \brief Execute the next timer task that has been scheduled for execution.
+ *
+ * If no task has been scheduled for execution, the function
+ * returns immediately, so there is no need for any polling.
+ *
+ * \return Nothing
+ */
+void timeout_next(void);
+
 
 #endif // __TIMEOUTDRIVER_H

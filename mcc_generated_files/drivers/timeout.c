@@ -24,223 +24,127 @@
 #include <xc.h>
 #endif
 #include <stdio.h>
+#include "../mcc.h"
 #include "timeout.h"
-#include "../include/rtc.h"
 
+#define SCHEDULER_BASE_PERIOD 8    // ms
 
-uint32_t dummyHandler(void *payload) {return 0;};
-void startTimerAtHead(void);
-INLINE void enqueueCallback(timerStruct_t* timer);
-INLINE void setTimerDuration(uint32_t duration);
-INLINE uint32_t makeAbsolute(uint32_t timeout);
-INLINE uint32_t rebaseList(void);
-INLINE void printList(void);
+timerStruct_t *listHead          = NULL;
+timerStruct_t * volatile dueHead = NULL;
 
-timerStruct_t *listHead = NULL;
-timerStruct_t * volatile executeQueueHead = NULL;
+volatile ticks  currTime = 0;
 
-timerStruct_t dummy = {dummyHandler};
-volatile uint32_t absoluteTimeofLastTimeout = 0;
-volatile uint32_t lastTimerLoad = 0;
-volatile bool  isRunning = false;
+// callback prototype
+void timeout_isr(void);
 
-bool timeout_hasPendingTimeouts(void)
+// compare two timestamps and return true if a >= thenb
+// timestamps are unsigned, using Z math (Z = 16-bit or 32-bit)
+// so their difference must be < half Z period
+// to simplify the check we compute the difference and cast it to signed
+inline bool greaterOrEqual(ticks a, ticks thenb)
 {
-    return (listHead == NULL);
+    return ((int16_t)(a - thenb) >= 0);
 }
 
-bool timeout_hasPendingCallbacks(void)
+void timeout_initialize(void)
 {
-    return (executeQueueHead == NULL);
+    RTC_SetPITIsrCallback(timeout_isr);
+
+	while (RTC.PITSTATUS > 0)
+        ;      /* Wait for all register to be synchronized */
+	RTC.CLKSEL = RTC_CLKSEL_INT1K_gc;   /* Clock Select: Internal 1kHz OSC */
+	while (RTC.PITSTATUS > 0)
+        ;      /* Wait for all register to be synchronized */
+    RTC_EnablePITInterrupt();
+    RTC.PITCTRLA = RTC_PERIOD_CYC8_gc;  // 8 msec match SCHEDULER_BASE_PERIOD
+	while (RTC.PITSTATUS > 0)
+        ;      /* Wait for all register to be synchronized */
+    RTC.PITCTRLA |= RTC_PI_bm;            // enable PIT function
 }
 
-// Disable all the timers without deleting them from any list. Timers can be 
-//    restarted by calling startTimerAtHead
-void stopTimeouts(void)
-{
-    RTC_DisableOVFInterrupt();
-    absoluteTimeofLastTimeout = 0;
-    lastTimerLoad = 0;
-    isRunning = false;
-}
-
-inline void setTimerDuration(uint32_t duration)
-{
-    lastTimerLoad = 65535 - duration;
-
-    RTC_WriteCounter(0);
-
-    RTC_ClearOVFInterruptFlag();
-    RTC_WriteCounter(lastTimerLoad);
-}
-
-// Convert the time provided from a "relative to now" time to a absolute time which
-//    means ticks since the last timeout occurred or the timer module was started   
-inline uint32_t makeAbsolute(uint32_t timeout)
-{
-    timeout += absoluteTimeofLastTimeout;
-    if (isRunning) {
-        uint32_t timerVal = RTC_ReadCounter();
-        if (timerVal < lastTimerLoad) // Timer has wrapped while we were busy
-        {
-            timerVal = 65535;
-        }
-        timeout += timerVal - lastTimerLoad;
-    }
-    return timeout;
-}
-
-uint32_t timeout_getTimeRemaining(timerStruct_t *timer)
-{
-    return timer->absoluteTime - makeAbsolute(0);
-}
-
-// Adjust the time base so that we can never wrap, saving us a lot of complications
-inline uint32_t rebaseList(void)
-{
-    timerStruct_t *basePoint = listHead;
-    uint32_t baseTime = makeAbsolute(0);
-    while(basePoint != NULL)
-    {
-        basePoint->absoluteTime -= baseTime;
-        basePoint = basePoint->next;
-    }
-    absoluteTimeofLastTimeout -= baseTime;
-    return baseTime;
-}
-
-inline void printList(void)
-{
-    timerStruct_t *basePoint = listHead;
-    while(basePoint != NULL)
-    {
-        printf("%ld -> ", (uint32_t)basePoint->absoluteTime);
-        basePoint = basePoint->next;
-    }
-    printf("NULL\n");
-}
+//void timeout_print_list(void)
+//{
+//	timer_struct_t *pTask = tasks_head;
+//
+//    printf("@%d tasks_head -> ", curr_time);
+//	while (pTask != NULL) {
+//		printf("%s:%ld -> ", pTask->name, (uint32_t)pTask->due);
+//		pTask = pTask->next;
+//	}
+//	printf("NULL\n");
+//}
 
 // Returns true if the insert was at the head, false if not
-bool sortedInsert(timerStruct_t *timer)
-{    
-    uint32_t timerAbsoluteTime = timer->absoluteTime;
-    uint8_t  atHead = 1;    
-    timerStruct_t *insertPoint = listHead;
-    timerStruct_t *prevPoint = NULL;
-    timer->next = NULL;
-
-    if(timerAbsoluteTime < absoluteTimeofLastTimeout)
-    {
-        timerAbsoluteTime += 65535 - rebaseList() + 1;
-        timer->absoluteTime = timerAbsoluteTime;
-    }
-    
-    while(insertPoint != NULL)
-    {
-        if(insertPoint->absoluteTime > timerAbsoluteTime)
-        {
-            break; // found the spot
-        }
-        prevPoint = insertPoint;
-        insertPoint = insertPoint->next;
-        atHead = 0;
-    }
-    
-    if(atHead == 1) // the front of the list. Checking the uint8_t saves 7 instructions
-    {
-        setTimerDuration(65535);
-        RTC_ClearOVFInterruptFlag();
-
-        timer->next = (listHead==&dummy)?dummy.next: listHead;
-        listHead = timer;
-        return true;
-    }
-    else // middle of the list
-    {
-        timer->next = prevPoint->next;
-    }
-    
-    prevPoint->next = timer;
-    return false;
-}
-
-void startTimerAtHead(void)
+static void sortedInsert(timerStruct_t *timer)
 {
-    // NOTE: listHead must NOT equal NULL at this point.
+	uint8_t   at_head       = true;
+	timerStruct_t *insert_point = listHead;
+	timerStruct_t *prev_point   = NULL;
 
-    RTC_DisableOVFInterrupt();
+    timer->next = NULL;
+	while (insert_point != NULL) {
+		if (greaterOrEqual(insert_point->due, timer->due)) {
+			break; // found the spot
+		}
+		prev_point   = insert_point;
+		insert_point = insert_point->next;
+		at_head      = false;
+	}
 
-    if(listHead==NULL) // no timeouts left
-    {
-        stopTimeouts();
-        return;
-    }
-
-    uint32_t period = listHead->absoluteTime - absoluteTimeofLastTimeout;
-
-    // Timer is too far, insert dummy and schedule timer after the dummy
-    if (period > 65535)
-    {
-        dummy.absoluteTime = absoluteTimeofLastTimeout + 65535;
-        dummy.next = listHead;
-        listHead = &dummy;
-        period = 65535;
-    }
-
-    setTimerDuration(period);
-
-    RTC_EnableOVFInterrupt();
-    isRunning = true;
+	if (at_head) { // the front of the list.
+		timer->next = listHead;
+		listHead = timer;
+		return;
+	}
+    else { // middle of the list
+		timer->next = prev_point->next;
+	}
+	prev_point->next = timer;
+	return;
 }
 
 // Cancel and remove all active timers
-void timeout_flushAll(void)
+void timeout_flush(void)
 {
-    stopTimeouts();
-
     while (listHead != NULL)
         timeout_delete(listHead);
 
-    while (executeQueueHead != NULL)
-        timeout_delete(executeQueueHead);
-
+    while (dueHead != NULL)
+        timeout_delete(dueHead);
 }
 
 
-// Deletes a timer from a list and returns true if the timer was found and 
+// Deletes a timer from a list and returns true if the timer was found and
 //     removed from the list specified
-bool timeout_deleteHelper(timerStruct_t * volatile *list, timerStruct_t *timer)
+static bool timeout_dequeue(timerStruct_t * volatile *list, timerStruct_t *timer)
 {
-    bool retVal = false; 
+    bool retVal = false;
     if (*list == NULL)
         return retVal;
 
     // Guard in case we get interrupted, we cannot safely compare/search and get interrupted
-    RTC_DisableOVFInterrupt();
+    RTC_DisablePITInterrupt();
 
     // Special case, the head is the one we are deleting
     if (timer == *list)
     {
         *list = (*list)->next;       // Delete the head
         retVal = true;
-        startTimerAtHead();        // Start the new timer at the head
-    } else 
-    {   // More than one timer in the list, search the list.  
-        timerStruct_t *findTimer = *list;
-        timerStruct_t *prevTimer = NULL;
-        while(findTimer != NULL)
-        {
-            if(findTimer == timer)
-            {
-                prevTimer->next = findTimer->next;
-                retVal = true;
-                break;
-            }
-            prevTimer = findTimer;
-            findTimer = findTimer->next;
-        } 
-        RTC_EnableOVFInterrupt();
+    } else
+    {                      // compare from the second task (if present) down
+		timerStruct_t *delete_point = (*list)->next;
+		timerStruct_t *prev_task = *list;   // start from the second element
+		while (delete_point != NULL) {
+			if (delete_point == timer) {
+				prev_task->next = delete_point->next; // delete it from list
+				retVal = true;
+				break;
+			}
+			prev_task = delete_point; // advance down the list
+			delete_point = delete_point->next;
+        }
     }
+    RTC_EnablePITInterrupt();
 
     return retVal;
 }
@@ -249,136 +153,78 @@ bool timeout_deleteHelper(timerStruct_t * volatile *list, timerStruct_t *timer)
 //     also remove it from the callback queue
 void timeout_delete(timerStruct_t *timer)
 {
-    if (!timeout_deleteHelper(&listHead, timer))
+    if (!timeout_dequeue(&listHead, timer))
     {
-        timeout_deleteHelper(&executeQueueHead, timer);
+        timeout_dequeue(&dueHead, timer);
     }
 
     timer->next = NULL;
 }
 
-// Moves the timer from the active list to the list of timers which are expired and 
-//    needs their callbacks called in callNextCallback
-inline void enqueueCallback(timerStruct_t* timer)
-{
-    timerStruct_t  *tmp;
-    timer->next = NULL;
-    
-    // Special case for empty list
-    if (executeQueueHead == NULL)
-    {
-        executeQueueHead = timer;
-        return;
-    }    
-    
-    // Find the end of the list and insert the next expired timer at the back of the queue
-    tmp = executeQueueHead;
-    while(tmp->next != NULL)
-        tmp = tmp->next;
-    
-    tmp->next = timer;
-}
-
-// This function checks the list of expired timers and calls the first one in the 
-//    list if the list is not empty. It also reschedules the timer if the callback
-//    returned a value greater than 0
+// This function checks the list of due tasks and calls the first one in the
+//    list if the list is not empty. It also reschedules the task if on repeat
 // It is recommended this is called from the main superloop (while(1)) in your code
-//    but by design this can also be called from the timer ISR. If you wish callbacks
-//    to happen from the ISR context you can call this as the last action in timeout_isr 
-//    instead. 
-inline void timeout_callNextCallback(void)
+//    but by design this can also be called from the task ISR. If you wish callbacks
+//    to happen from the ISR context you can call this as the last action in timeout_isr
+//    instead.
+inline void timeout_next(void)
 {
-    if (executeQueueHead == NULL)
+    if (dueHead == NULL)
         return;
 
-    bool tempIE = RTC_IsOVFInterruptEnabled();
-    RTC_DisableOVFInterrupt();
+    RTC_DisablePITInterrupt();
 
-    timerStruct_t *callBackTimer = executeQueueHead;
-    
-    // Done, remove from list
-    executeQueueHead = executeQueueHead->next;
-    // Mark the timer as not in use
-    callBackTimer->next = NULL;
+    timerStruct_t *pTimer = dueHead;
 
-    if(tempIE)
-    {
-        RTC_EnableOVFInterrupt();
-    }
-    
-    uint32_t reschedule = callBackTimer->callbackPtr(callBackTimer->payload);
+ 	dueHead = dueHead->next;      // and remove it from the list
+    sortedInsert(pTimer);       // re-enter it immediately in the task queue
+//    timeout_print_list();
+
+    RTC_EnablePITInterrupt();
+
+	bool reschedule = pTimer->callback(pTimer->payload); // execute the task
 
     // Do we have to reschedule it? If yes then add delta to absolute for reschedule
-    if(reschedule)
+    if(!reschedule)
     {
-        timeout_create(callBackTimer, reschedule);
-    } 
+        timeout_delete(pTimer);
+    }
 }
 
-void timeout_initialize(void)
-{
-    RTC_SetOVFIsrCallback(timeout_isr);
-}
-
-// This function starts the timer provided with an expiry equal to "timeout".
-// If the timer was already active/running it will be replaced by this and the 
-//    old (active) timer will be removed/cancelled first
-void timeout_create(timerStruct_t *timer, uint32_t timeout)
+// This function queues a task with a given period/duration
+// If the task was already active/running it will be replaced by this and the
+//    old (active) task will be removed/cancelled first
+// inputs:
+//   ms         time expressed in ms
+//   return     true if successful, false if period < SCHEDULER_BASE_PERIOD
+bool timeout_create(timerStruct_t *timer, uint32_t ms)
 {
     // If this timer is already active, replace it
     timeout_delete(timer);
-
-    RTC_DisableOVFInterrupt();
-
-    timer->absoluteTime = makeAbsolute(timeout);
-    
-    // We only have to start the timer at head if the insert was at the head
-    if(sortedInsert(timer))
-    {
-        startTimerAtHead();
-    } else {
-        if (isRunning)
-            RTC_EnableOVFInterrupt();
+    if ((ms == 0) || (ms > MAX_BASE_PERIOD)){
+        return false;
     }
+
+    RTC_DisablePITInterrupt();
+
+    timer->period = (ticks)ms;               // store period scaled
+    timer->due = currTime + timer->period;   // compute due time
+    sortedInsert(timer);
+    RTC_EnablePITInterrupt();
+    return true;    // successful creation
 }
 
 // NOTE: assumes the callback completes before the next timer tick
 void timeout_isr(void)
 {
-    timerStruct_t *next = listHead->next;
-    absoluteTimeofLastTimeout = listHead->absoluteTime;
-    lastTimerLoad = 0;
-    
-    if (listHead != &dummy) {
-        enqueueCallback(listHead);
+    currTime += SCHEDULER_BASE_PERIOD;    // forever advancing and wrapping around
+    // activate timers that are due (move to due list))
+    while( (listHead)  &&
+            greaterOrEqual(currTime, listHead->due) ) {
+        listHead->due += listHead->period;    // update immediately the due time
+        timerStruct_t * pNext = listHead->next;     // save next temporarily
+        listHead->next = dueHead;         // insert at head of due
+        dueHead = listHead;
+        listHead = pNext;               // remove task from scheduler queue
     }
-
-    listHead = next;
-    
-    startTimerAtHead();    
-}
-
-
-// These methods are for calculating the elapsed time in stopwatch mode. 
-// startTimer will start a timer with (maximum range)/2. You cannot time more than 
-//    this and the timer will stop after this time elapses
-void timeout_startTimer(timerStruct_t *timer)
-{
-    uint32_t i = -1;
-    timeout_create(timer, i>>1);
-}
-
-// This function stops the "stopwatch" and returns the elapsed time.
-uint32_t timeout_stopTimer(timerStruct_t *timer)
-{
-    uint32_t  now = makeAbsolute(0); // Do this as fast as possible for accuracy
-    uint32_t i = -1;
-    i>>=1;
-    
-    timeout_delete(timer);
-
-    uint32_t  diff = timer->absoluteTime - now;
-    
-    // This calculates the (max range)/2 minus (remaining time) which = elapsed time
-    return (i - diff);
-}
+ }

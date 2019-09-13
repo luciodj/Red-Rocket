@@ -133,7 +133,7 @@ void application_init(){
       timeout_create(&MAIN_dataTasksTimer, MAIN_DATATASK_INTERVAL);
    }
 
-   LED_test();
+   LED_test();          // second LED sequence
 }
 
 void application_post_provisioning(void)
@@ -158,7 +158,7 @@ void  wifiConnectionStateChanged(uint8_t status)
 // This scheduler will check all tasks and timers that are due and service them
 void runScheduler(void)
 {
-    timeout_callNextCallback();
+    timeout_next();
 }
 
 

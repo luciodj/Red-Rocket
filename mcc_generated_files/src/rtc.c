@@ -1,23 +1,23 @@
 /*
-    (c) 2018 Microchip Technology Inc. and its subsidiaries. 
-    
-    Subject to your compliance with these terms, you may use Microchip software and any 
-    derivatives exclusively with Microchip products. It is your responsibility to comply with third party 
-    license terms applicable to your use of third party software (including open source software) that 
+    (c) 2018 Microchip Technology Inc. and its subsidiaries.
+
+    Subject to your compliance with these terms, you may use Microchip software and any
+    derivatives exclusively with Microchip products. It is your responsibility to comply with third party
+    license terms applicable to your use of third party software (including open source software) that
     may accompany Microchip software.
-    
-    THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER 
-    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY 
-    IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS 
+
+    THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
+    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY
+    IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS
     FOR A PARTICULAR PURPOSE.
-    
-    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, 
-    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND 
-    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP 
-    HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO 
-    THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL 
-    CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT 
-    OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS 
+
+    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
+    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
+    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP
+    HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO
+    THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+    CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT
+    OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS
     SOFTWARE.
 */
 
@@ -40,7 +40,7 @@ int8_t RTC_Initialize()
 {
         while (RTC.STATUS > 0) { /* Wait for all register to be synchronized */
     }
-    //Compare 
+    //Compare
     RTC.CMP = 0x00;
 
     //Count
@@ -52,22 +52,22 @@ int8_t RTC_Initialize()
     //Clock selection
     RTC.CLKSEL = 0x01;
 
-    //DBGRUN disabled; 
+    //DBGRUN disabled;
     RTC.DBGCTRL = 0x00;
 
-    //CMP disabled; OVF enabled; 
-    RTC.INTCTRL = 0x01;
+    //CMP disabled; OVF dis-abled; // disabled
+    RTC.INTCTRL = 0x0;
 
-    //PERIOD OFF; PITEN disabled; 
+    //PERIOD OFF; PITEN disabled;
     RTC.PITCTRLA = 0x00;
 
-    //DBGRUN disabled; 
+    //DBGRUN disabled;
     RTC.PITDBGCTRL = 0x00;
 
-    //PI disabled; 
+    //PI disabled;
 	RTC.PITINTCTRL = 0x00;
 
-    //RUNSTDBY disabled; PRESCALER DIV1; CORREN disabled; RTCEN enabled; 
+    //RUNSTDBY disabled; PRESCALER DIV1; CORREN disabled; RTCEN enabled;
     RTC.CTRLA = 0x01;
 
     return 0;
@@ -76,6 +76,11 @@ int8_t RTC_Initialize()
 void RTC_SetOVFIsrCallback(RTC_cb_t cb)
 {
     RTC_OVF_isr_cb = cb;
+}
+
+void RTC_SetPITIsrCallback(RTC_cb_t cb) // missing
+{
+    RTC_PIT_isr_cb = cb;
 }
 
 void RTC_SetCMPIsrCallback(RTC_cb_t cb)
@@ -87,29 +92,29 @@ ISR(RTC_CNT_vect)
 {
     if (RTC.INTFLAGS & RTC_OVF_bm )
     {
-        if (RTC_OVF_isr_cb != NULL) 
+        if (RTC_OVF_isr_cb != NULL)
         {
             (*RTC_OVF_isr_cb)();
-        } 
-    }  
-    
+        }
+    }
+
     if (RTC.INTFLAGS & RTC_CMP_bm )
     {
-        if (RTC_CMP_isr_cb != NULL) 
+        if (RTC_CMP_isr_cb != NULL)
         {
             (*RTC_CMP_isr_cb)();
-        } 
-    }   
+        }
+    }
     RTC.INTFLAGS = (RTC_OVF_bm | RTC_CMP_bm);
 }
 
 ISR(RTC_PIT_vect)
 {
-   if (RTC_PIT_isr_cb != NULL) 
+   if (RTC_PIT_isr_cb != NULL)
    {
     (*RTC_PIT_isr_cb)();
-   } 
-   RTC.INTFLAGS = RTC_PI_bm;
+   }
+   RTC.PITINTFLAGS = RTC_PI_bm; // bug fix
 }
 
 inline void RTC_WriteCounter(uint16_t timerVal)
@@ -136,32 +141,42 @@ inline uint16_t RTC_ReadPeriod(void)
 
 inline void RTC_EnableCMPInterrupt(void)
 {
-    RTC.INTCTRL |= RTC_CMP_bm; 
+    RTC.INTCTRL |= RTC_CMP_bm;
 }
 
 inline void RTC_DisableCMPInterrupt(void)
 {
-    RTC.INTCTRL &= ~RTC_CMP_bm; 
+    RTC.INTCTRL &= ~RTC_CMP_bm;
+}
+
+inline void RTC_ClearCMPInterruptFlag(void) // missing
+{
+    RTC.INTFLAGS &= ~RTC_CMP_bm;
 }
 
 inline void RTC_EnableOVFInterrupt(void)
 {
-    RTC.INTCTRL |= RTC_OVF_bm; 
+    RTC.INTCTRL |= RTC_OVF_bm;
 }
 
 inline void RTC_DisableOVFInterrupt(void)
 {
-    RTC.INTCTRL &= ~RTC_OVF_bm; 
+    RTC.INTCTRL &= ~RTC_OVF_bm;
 }
 
 inline void RTC_EnablePITInterrupt(void)
 {
-    RTC.INTCTRL |= RTC_PI_bm;  
+    RTC.PITINTCTRL |= RTC_PI_bm;        // bug fix
 }
 
 inline void RTC_DisablePITInterrupt(void)
 {
-    RTC.INTCTRL &= ~RTC_PI_bm; 
+    RTC.PITINTCTRL &= ~RTC_PI_bm;       // bug fix
+}
+
+inline void RTC_ClearPITInterruptFlag(void) // missing
+{
+    RTC.PITINTFLAGS = RTC_PI_bm;
 }
 
 inline void RTC_ClearOVFInterruptFlag(void)
