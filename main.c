@@ -61,7 +61,6 @@ void sendToCloud(void)
 int main(void)
 {
     application_init();
-    printf("Application Initialized\n");
 
     while (1) {
         runScheduler();

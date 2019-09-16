@@ -38,7 +38,7 @@ SOFTWARE.
 #include "../winc/socket/include/socket.h"
 
 #define CLOUD_WIFI_TASK_INTERVAL        50L
-#define CLOUD_NTP_TASK_INTERVAL         500L
+#define CLOUD_NTP_TASK_INTERVAL         32000L  // resync every 32 seconds
 #define SOFT_AP_CONNECT_RETRY_INTERVAL  1000L
 
 // wifi credential buffers
@@ -124,11 +124,11 @@ bool wifi_connectToAp(uint8_t passed_wifi_creds)
 
 	if(passed_wifi_creds == NEW_CREDENTIALS)
 	{
-		e=m2m_wifi_connect((char *)ssid, sizeof(ssid), authType, (char *)pass, M2M_WIFI_CH_ALL);
+		e = m2m_wifi_connect((char *)ssid, strlen(ssid), authType, (char *)pass, M2M_WIFI_CH_ALL);
 	}
 	else
 	{
-		e=m2m_wifi_default_connect();
+		e = m2m_wifi_default_connect();
 	}
 
 	if(M2M_SUCCESS != e)
@@ -252,7 +252,8 @@ static void wifiCallback(uint8_t msgType, void *pMsg)
         {
             tstrSystemTime* WINCTime = (tstrSystemTime*)pMsg;
             struct tm theTime;
-
+//            get the current time
+//            time_t timeNow = time(NULL);
             // Convert to UNIX_EPOCH, this mktime uses years since 1900 and months are 0 based so we
             //    are doing a couple of adjustments here.
             if(WINCTime->u16Year > 0)
@@ -266,6 +267,8 @@ static void wifiCallback(uint8_t msgType, void *pMsg)
                 theTime.tm_isdst = 0;
 
                 set_system_time(mktime(&theTime));
+                // compare internal and updated time
+//                debug_print("RTC=%ld, NTP=%ld\n", timeNow, time(NULL));
             }
             break;
         }

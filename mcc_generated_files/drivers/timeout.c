@@ -49,24 +49,39 @@ inline bool greaterOrEqual(ticks a, ticks thenb)
 void timeout_initialize(void)
 {
     RTC_SetPITIsrCallback(timeout_isr);
+    // Wait for RTC register synchronization
+    while (RTC.STATUS > 0);
+    RTC.CTRLA &= ~RTC_RTCEN_bm;         // Disable the RTC module
 
-	while (RTC.PITSTATUS > 0)
-        ;      /* Wait for all register to be synchronized */
-	RTC.CLKSEL = RTC_CLKSEL_INT1K_gc;   /* Clock Select: Internal 1kHz OSC */
-	while (RTC.PITSTATUS > 0)
-        ;      /* Wait for all register to be synchronized */
+    // Wait for PIT register synchronization
+    while (RTC.PITSTATUS > 0);
+    RTC.PITCTRLA &= ~RTC_PITEN_bm;      // Disable the PIT module
+
+    // Wait for OSCULP32K to be stable (just in case)
+    while (!(CLKCTRL.MCLKSTATUS & CLKCTRL_OSC32KS_bm));
+
+    // Wait for RTC register synchronization
+    while (RTC.STATUS > 0);
+    RTC.CLKSEL = RTC_CLKSEL_INT1K_gc;   // select 1kHz mode
+
+    // Wait for PIT register synchronization
+    while (RTC.PITSTATUS > 0);
     RTC_EnablePITInterrupt();
+
+    // Wait for PIT register synchronization
+    while (RTC.PITSTATUS > 0);
     RTC.PITCTRLA = RTC_PERIOD_CYC8_gc;  // 8 msec match SCHEDULER_BASE_PERIOD
-	while (RTC.PITSTATUS > 0)
-        ;      /* Wait for all register to be synchronized */
-    RTC.PITCTRLA |= RTC_PI_bm;            // enable PIT function
+
+    // Wait for PIT register synchronization
+	while (RTC.PITSTATUS > 0);
+    RTC.PITCTRLA |= RTC_PITEN_bm;       // enable PIT function
 }
 
 //void timeout_print_list(void)
 //{
-//	timer_struct_t *pTask = tasks_head;
+//	timerStruct_t *pTask = listHead;
 //
-//    printf("@%d tasks_head -> ", curr_time);
+//    printf("@%d lsitHead -> ", currTime);
 //	while (pTask != NULL) {
 //		printf("%s:%ld -> ", pTask->name, (uint32_t)pTask->due);
 //		pTask = pTask->next;

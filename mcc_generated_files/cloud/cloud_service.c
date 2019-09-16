@@ -88,7 +88,7 @@ bool sendSubscribe = true;
 // Create the timers for scheduler_timeout which runs these tasks
 timerStruct_t CLOUD_taskTimer            = {CLOUD_task};
 timerStruct_t mqttTimeoutTaskTimer       = {mqttTimeoutTask};
-timerStruct_t cloudResetTaskTimer       = {cloudResetTask};
+timerStruct_t cloudResetTaskTimer        = {cloudResetTask};
 
 /** \brief MQTT publish handler call back table.
  *

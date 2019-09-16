@@ -169,25 +169,29 @@ void sendToCloud(void);
 // This gets called by the scheduler approximately every 100ms
 uint32_t MAIN_dataTask(void *payload)
 {
-   static time_t previousTransmissionTime = 0;
+//    static time_t previousTransmissionTime = 0;
+    static unsigned main_counter = 0;
 
    // Get the current time. This uses the C standard library time functions
    time_t timeNow = time(NULL);
 
-   // Example of how to send data when MQTT is connected every 1 second based on the system clock
-   if (CLOUD_isConnected())
-   {
-      // How many seconds since the last time this loop ran?
-      int32_t delta = difftime(timeNow,previousTransmissionTime);
+#define TASK_PERIOD_MULTIPLE   (CFG_SEND_INTERVAL*1000/MAIN_DATATASK_INTERVAL)
+// i.e. SEND_INTERVAL==1 sec, MAIN_DATATASK_INTERVAL==100ms -> PERIOD_MULTIPLE==10
 
-      if (delta >= CFG_SEND_INTERVAL)
-      {
-         previousTransmissionTime = timeNow;
-
-         // Call the data task in main.c
-         sendToCloud();
-      }
-   }
+    if (CLOUD_isConnected()) {
+        // increment internal time keeper
+        main_counter++;
+        if (main_counter == (TASK_PERIOD_MULTIPLE)) {
+            main_counter = 0;
+            // update the system time
+            timeNow += CFG_SEND_INTERVAL;
+            set_system_time(timeNow);
+            sendToCloud();
+        }
+    }
+    else {
+        main_counter = 0;     // reset timer when not connected
+    }
 
    if (!shared_networking_params.haveAPConnection) {
         LED_BLUE_SetHigh();
