@@ -30,6 +30,7 @@
 #include "../../cryptoauthlib/lib/tls/atcatls.h"
 #include "crypto_client.h"
 #include "../cloud_service.h"
+#include "../../debug_print.h"
 
 #ifndef ATCA_NO_HEAP
 #error : This project uses CryptoAuthLibrary V2. Please add "ATCA_NO_HEAP" to toolchain symbols.
@@ -79,6 +80,7 @@ uint8_t CRYPTO_CLIENT_createJWT(char* buf, size_t buflen, uint32_t ts, const cha
     if(buf && buflen)
     {
         /* Build the JWT */
+   debug_printInfo("JWT: init");
         if (ATCA_SUCCESS != atca_jwt_init(&jwt, buf, buflen))
         {
             return ERROR;
@@ -99,6 +101,7 @@ uint8_t CRYPTO_CLIENT_createJWT(char* buf, size_t buflen, uint32_t ts, const cha
             return ERROR;
         }
 
+   debug_printInfo("JWT: add finalize");
         if (ATCA_SUCCESS != atca_jwt_finalize(&jwt, 0))
         {
             return ERROR;

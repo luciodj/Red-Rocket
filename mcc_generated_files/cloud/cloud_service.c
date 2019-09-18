@@ -386,8 +386,8 @@ static void updateJWT(uint32_t epoch)
    sprintf(cid, "projects/%s/locations/%s/registries/%s/devices/%s", projectId, projectRegion, registryId, deviceId);
    sprintf(mqttTopic, "/devices/%s/events", deviceId);
 
-   debug_printInfo("MQTT: cid=%s", cid);
-   debug_printInfo("MQTT: mqttTopic=%s", mqttTopic);
+//   debug_printInfo("MQTT: cid=%s", cid);
+//   debug_printInfo("MQTT: mqttTopic=%s", mqttTopic);
    uint8_t res = CRYPTO_CLIENT_createJWT((char*)mqttPassword, PASSWORD_SPACE, epoch, projectId);
 
    time_t t = epoch - UNIX_OFFSET;

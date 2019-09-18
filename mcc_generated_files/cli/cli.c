@@ -183,7 +183,7 @@ static void set_wifi_auth(char *ssid_pwd_auth)
     }
 
     if (credentials[0] != NULL)
-    { // infer the authtype from the number of parameters passed
+    { // infer the authType from the number of parameters passed
         authType = M2M_WIFI_SEC_INVALID; // init the authentication type
         if (credentials[1]==NULL && credentials[2]==NULL)
             // provided only ssid

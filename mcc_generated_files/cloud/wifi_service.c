@@ -171,7 +171,7 @@ bool wifi_disconnectFromAp(void)
 // Update the system time every CLOUD_NTP_TASK_INTERVAL milliseconds
 uint32_t ntpTimeFetchTask(void *payload)
 {
-    m2m_wifi_get_sytem_time();
+    m2m_wifi_get_system_time();
     return CLOUD_NTP_TASK_INTERVAL;
 }
 
