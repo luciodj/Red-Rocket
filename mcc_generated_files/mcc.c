@@ -36,7 +36,7 @@ void SYSTEM_Initialize(void)
     SPI0_Initialize();
     I2C0_Initialize();
     ADC0_Initialize();
-    RTC_Initialize();
+//    RTC_Initialize();
     USART2_Initialize();
     CPUINT_Initialize();
     timeout_initialize();
