@@ -237,7 +237,7 @@ ATCA_STATUS hal_i2c_readNBytes(twi0_address_t address, void *data, size_t len)
 	while (!I2C0_Open(address))
 		; // sit here until we get the bus..
 	I2C0_SetBuffer(data, len);
-	I2C0_SetAddressNackCallback(I2C0_returnNack, NULL); // do not retry, return fail
+	I2C0_SetAddressNackCallback(I2C0_SetReturnNackCallback, NULL); // do not retry, return fail
 	I2C0_MasterOperation(true);
     while (I2C_BUSY == (ret = I2C0_Close()))
 		; // sit here until finished.

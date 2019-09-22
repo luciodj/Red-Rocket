@@ -346,6 +346,14 @@ static twi0_fsm_states_t I2C0_DO_SEND_STOP(void)
     return I2C0_DO_IDLE();
 }
 
+static twi0_fsm_states_t I2C0_DO_SEND_NACK_STOP(void)
+{
+    I2C0_MasterStop();              // stop
+    I2C0_status.error = I2C_FAIL;   // but set the error
+    I2C0_status.busy  = false;      // Bus Free
+    return I2C_IDLE;
+}
+
 // TODO: probably need 2 addressNACK's one from read and one from write.
 //       the do NACK before RESTART or STOP is a special case that a new state simplifies.
 static twi0_fsm_states_t I2C0_DO_ADDRESS_NACK(void)
@@ -357,6 +365,8 @@ static twi0_fsm_states_t I2C0_DO_ADDRESS_NACK(void)
         return I2C0_DO_SEND_RESTART_READ();
     case I2C_RESTART_WRITE:
         return I2C0_DO_SEND_RESTART_WRITE();
+    case  I2C_NACK_STOP:
+        return I2C0_DO_SEND_NACK_STOP();
     default:
         return I2C0_DO_SEND_STOP();
     }
@@ -537,11 +547,6 @@ void I2C0_MasterIsr(void)
     I2C0_status.state = I2C0_fsmStateTable[I2C0_status.state]();
 }
 
-twi0_operations_t I2C0_returnNack(void *p)
-{
-    I2C0_status.busy  = false;
-    I2C0_status.error = I2C_FAIL;
-}
 /************************************************************************/
 /* Helper Functions                                                     */
 /************************************************************************/
@@ -687,4 +692,9 @@ twi0_operations_t I2C0_SetRestartWriteCallback(void *funPtr)
 twi0_operations_t I2C0_SetRestartReadCallback(void *funPtr)
 {
     return I2C_RESTART_READ;
+}
+
+twi0_operations_t I2C0_SetReturnNackCallback(void *funPtr)
+{
+    return I2C_NACK_STOP;
 }

@@ -44,17 +44,19 @@ typedef enum {
                 // Sit on the event call-backs.
 } twi0_error_t;
 
-typedef enum { I2C_STOP = 1, I2C_RESTART_READ, I2C_RESTART_WRITE, I2C_CONTINUE, I2C_RESET_LINK } twi0_operations_t;
+typedef enum { I2C_STOP = 1, I2C_NACK_STOP, I2C_RESTART_READ, I2C_RESTART_WRITE, I2C_CONTINUE, I2C_RESET_LINK } twi0_operations_t;
 
 typedef twi0_operations_t (*twi0_callback_t)(void *funPtr);
 
 typedef uint8_t twi0_address_t;
 //typedef twi0_address_t i2c_address_t;
+
 // common callback responses
 twi0_operations_t I2C0_SetReturnStopCallback(void *funPtr);
 twi0_operations_t I2C0_SetReturnResetCallback(void *funPtr);
 twi0_operations_t I2C0_SetRestartWriteCallback(void *funPtr);
 twi0_operations_t I2C0_SetRestartReadCallback(void *funPtr);
+twi0_operations_t I2C0_SetReturnNackCallback(void *funPtr);
 
 /**
  * \brief Initialize I2C interface
