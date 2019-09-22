@@ -46,12 +46,13 @@
                         "reset"NEWLINE\
                         "device"NEWLINE\
                         "key"NEWLINE\
-                        "reconnect" NEWLINE\
                         "version" NEWLINE\
-                        "cli_version" NEWLINE\
                         "wifi <ssid>[,<pass>,[authType]]" NEWLINE\
                         "debug" NEWLINE\
                         NEWLINE"\4"
+
+//                        "cli_version" NEWLINE
+//                        "reconnect" NEWLINE
 
 static char command[MAX_COMMAND_SIZE];
 static bool isCommandReceived = false;
@@ -63,11 +64,11 @@ const char * const firmware_version_number        = "RedRocket(1.2)";
 
 static void command_received(char *command_text);
 static void reset_cmd(char *pArg);
-static void reconnect_cmd(char *pArg);
+//static void reconnect_cmd(char *pArg);
 static void set_wifi_auth(char *ssid_pwd_auth);
 static void get_public_key(char *pArg);
 static void get_device_id(char *pArg);
-static void get_cli_version(char *pArg);
+//static void get_cli_version(char *pArg);
 static void get_firmware_version(char *pArg);
 static void set_debug_level(char *pArg);
 
@@ -88,11 +89,11 @@ struct cmd
 const struct cmd commands[] =
 {
     { "reset",       reset_cmd},
-    { "reconnect",   reconnect_cmd },
+//    { "reconnect",   reconnect_cmd },
     { "wifi",        set_wifi_auth },
     { "key",         get_public_key },
     { "device",      get_device_id },
-    { "cli_version", get_cli_version },
+//    { "cli_version", get_cli_version },
     { "version",     get_firmware_version },
     { "debug",       set_debug_level }
 };
@@ -229,13 +230,13 @@ static void set_wifi_auth(char *ssid_pwd_auth)
 		printf("Error: command format is wifi <ssid>[,<pass>,[authType]]\r\n\4");
 }
 
-static void reconnect_cmd(char *pArg)
-{
-    (void)pArg;
-
-    MQTT_Disconnect(MQTT_GetClientConnectionInfo());
-    printf("OK\r\n");
-}
+//static void reconnect_cmd(char *pArg)
+//{
+//    (void)pArg;
+//
+//    MQTT_Disconnect(MQTT_GetClientConnectionInfo());
+//    printf("OK\r\n");
+//}
 
 static void reset_cmd(char *pArg)
 {
@@ -294,11 +295,11 @@ static void get_device_id(char *pArg)
     }
 }
 
-static void get_cli_version(char *pArg)
-{
-    (void)pArg;
-    printf("v%s\r\n\4", cli_version_number);
-}
+//static void get_cli_version(char *pArg)
+//{
+//    (void)pArg;
+//    printf("v%s\r\n\4", cli_version_number);
+//}
 
 static void get_firmware_version(char *pArg)
 {
